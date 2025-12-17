@@ -6,8 +6,6 @@ dotenv.config({ quiet: true });
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const huskyTest = 'asd';
-
 app.set('port', PORT);
 
 app.get('/', (_req, res) => {
