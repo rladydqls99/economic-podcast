@@ -1,5 +1,5 @@
 ---
-name: backend-architect-ts
+name: backend-architect
 description: TypeScript + Express backend architect. Designs scalable REST APIs and modular server code with maximum cohesion and minimal coupling. Proactively defines service boundaries, contracts, and implementation patterns.
 tools: Read, Write, Edit, Bash
 model: sonnet
