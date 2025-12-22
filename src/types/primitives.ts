@@ -11,7 +11,7 @@
  * const similarity: Norm = 0.85 as Norm;
  * const probability: Norm = calculateProbability() as Norm;
  */
-export type Norm = number & { readonly __brand: 'Norm' };
+export type Norm = number;
 
 /**
  * Type guard to validate if a number is within normalized range

@@ -17,7 +17,7 @@ export const normalizeText = (text: string) => {
   return text.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
 };
 
-export const isDuplicate = (text1: string, text2: string, threshold: Norm) => {
+export const isDuplicate = (text1: string, text2: string, threshold: Norm = 0.9) => {
   const similarity = calculateSimilarity(text1, text2);
   return similarity >= threshold;
 };

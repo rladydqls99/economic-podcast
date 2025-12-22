@@ -4,3 +4,14 @@ dist/
 .env
 
 *.log
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Jest cache
+.jest-cache/
+
+# Test reports
+test-results/
+junit.xml
