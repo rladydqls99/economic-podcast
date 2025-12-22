@@ -1,10 +1,8 @@
 import express from 'express';
-import dotenv from 'dotenv';
-
-dotenv.config({ quiet: true });
+import { env } from './config/env.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = env.port;
 
 app.set('port', PORT);
 
