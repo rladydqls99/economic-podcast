@@ -61,12 +61,12 @@
 
 ```typescript
 interface NewsItem {
-  title: string;          // 뉴스 제목
-  summary: string;        // 요약/리드
-  url: string;            // 원문 링크
-  publishedAt: Date;      // 발행 시간
-  source: string;         // 언론사명
-  category?: string;      // 카테고리
+  title: string; // 뉴스 제목
+  summary: string; // 요약/리드
+  url: string; // 원문 링크
+  publishedAt: Date; // 발행 시간
+  source: string; // 언론사명
+  category?: string; // 카테고리
 }
 ```
 
@@ -76,54 +76,60 @@ interface NewsItem {
 
 ### 2.1. 개발 환경 확인
 
-- [ ] Node.js 18.x 이상 설치 확인
+- [x] Node.js 18.x 이상 설치 확인
+
   ```bash
   node --version
   ```
 
-- [ ] TypeScript 설치 확인
+- [x] TypeScript 설치 확인
+
   ```bash
   npx tsc --version
   ```
 
-- [ ] 프로젝트 의존성 설치 확인
+- [x] 프로젝트 의존성 설치 확인
+
   ```bash
   pnpm install
   ```
 
 - [ ] ESLint 및 Prettier 설정 확인
-  - [ ] `.eslintrc.js` 또는 `.eslintrc.json` 파일 확인
-  - [ ] `.prettierrc` 파일 확인
-  - [ ] `package.json`에 lint 스크립트 추가
+  - [x] `.eslintrc.js` 또는 `.eslintrc.json` 파일 확인
+  - [x] `.prettierrc` 파일 확인
+  - [x] `package.json`에 lint 스크립트 추가
 
 ### 2.2. 디렉토리 구조 생성 (PRD 섹션 7.3)
 
-- [ ] 모듈 디렉토리 구조 생성:
+- [x] 모듈 디렉토리 구조 생성:
+
   ```bash
-  mkdir -p src/modules/newsCollector
+  mkdir -p src/modules/news-collector
   mkdir -p src/config
   mkdir -p src/utils
   mkdir -p data/temp
   mkdir -p logs
   ```
 
-- [ ] PRD 섹션 7.3의 디렉토리 구조와 일치하는지 확인:
-  - [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/`
-  - [ ] `/Users/kim-yongbin/projects/economic-podcast/src/config/`
-  - [ ] `/Users/kim-yongbin/projects/economic-podcast/src/utils/`
-  - [ ] `/Users/kim-yongbin/projects/economic-podcast/data/`
-  - [ ] `/Users/kim-yongbin/projects/economic-podcast/logs/`
+- [x] PRD 섹션 7.3의 디렉토리 구조와 일치하는지 확인:
+  - [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/`
+  - [x] `/Users/kim-yongbin/projects/economic-podcast/src/config/`
+  - [x] `/Users/kim-yongbin/projects/economic-podcast/src/utils/`
+  - [x] `/Users/kim-yongbin/projects/economic-podcast/data/`
+  - [x] `/Users/kim-yongbin/projects/economic-podcast/logs/`
 
 ### 2.3. 환경 변수 설정 (PRD 섹션 6.3)
 
-- [ ] `.env` 파일이 없으면 생성
+- [x] `.env` 파일이 없으면 생성
+
   ```bash
   touch .env
   ```
 
-- [ ] `.gitignore`에 `.env` 추가 확인
+- [x] `.gitignore`에 `.env` 추가 확인
 
-- [ ] `.env.example` 파일 생성 및 필수 환경 변수 추가:
+- [x] `.env.example` 파일 생성 및 필수 환경 변수 추가:
+
   ```
   NODE_ENV=development
   PORT=3000
@@ -146,44 +152,44 @@ interface NewsItem {
 
 ### 3.1. 타입 정의 파일 생성 (FR-001-03)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/types.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/types.ts` 파일 생성
 
 ### 3.2. NewsItem 인터페이스 정의 (PRD 섹션 8.1)
 
-- [ ] `NewsItem` 인터페이스 정의 및 JSDoc 주석 추가:
+- [x] `NewsItem` 인터페이스 정의 및 JSDoc 주석 추가:
   ```typescript
   /**
    * 수집된 뉴스 아이템 인터페이스
    * PRD 섹션 8.1 데이터 구조 참조
    */
   export interface NewsItem {
-    title: string;          // 뉴스 제목 (필수)
-    summary: string;        // 요약/리드 (필수)
-    url: string;            // 원문 링크 (필수)
-    publishedAt: Date;      // 발행 시간 (필수)
-    source: string;         // 언론사명 (필수)
-    category?: string;      // 카테고리 (선택)
+    title: string; // 뉴스 제목 (필수)
+    summary: string; // 요약/리드 (필수)
+    url: string; // 원문 링크 (필수)
+    publishedAt: Date; // 발행 시간 (필수)
+    source: string; // 언론사명 (필수)
+    category?: string; // 카테고리 (선택)
   }
   ```
 
 ### 3.3. 설정 인터페이스 정의
 
-- [ ] `NewsCollectorConfig` 인터페이스 정의:
+- [x] `NewsCollectorConfig` 인터페이스 정의:
   ```typescript
   /**
    * 뉴스 수집기 설정 인터페이스
    */
   export interface NewsCollectorConfig {
-    startTime: Date;         // 수집 시작 시간 (FR-001-01: 당일 0시)
-    endTime: Date;           // 수집 종료 시간 (FR-001-01: 당일 22시)
-    minNewsCount: number;    // 최소 수집 뉴스 개수 (기본값: 20)
+    startTime: Date; // 수집 시작 시간 (FR-001-01: 당일 0시)
+    endTime: Date; // 수집 종료 시간 (FR-001-01: 당일 22시)
+    minNewsCount: number; // 최소 수집 뉴스 개수 (기본값: 20)
     similarityThreshold: number; // 중복 판단 유사도 임계값 (FR-001-05: 0.9)
   }
   ```
 
 ### 3.4. 수집 결과 인터페이스 정의
 
-- [ ] `CollectionResult` 인터페이스 정의:
+- [x] `CollectionResult` 인터페이스 정의:
   ```typescript
   /**
    * 뉴스 수집 결과 인터페이스
@@ -201,7 +207,8 @@ interface NewsItem {
 
 ### 3.5. 뉴스 소스 타입 정의 (FR-001-02)
 
-- [ ] `NewsSource` 열거형 정의:
+- [x] `NewsSource` 열거형 정의:
+
   ```typescript
   /**
    * 뉴스 소스 타입 (FR-001-02: 최소 3개 소스)
@@ -209,7 +216,7 @@ interface NewsItem {
   export enum NewsSourceType {
     RSS_FEED = 'RSS_FEED',
     GOOGLE_NEWS = 'GOOGLE_NEWS',
-    WEB_CRAWL = 'WEB_CRAWL'
+    WEB_CRAWL = 'WEB_CRAWL',
   }
 
   export interface NewsSource {
@@ -226,9 +233,10 @@ interface NewsItem {
 
 ### 4.1. 날짜/시간 유틸리티 생성 (FR-001-01, FR-001-04)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/utils/dateTime.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/utils/date-time.ts` 파일 생성
 
-- [ ] KST(한국 표준시) 현재 시간 가져오기 함수 구현:
+- [x] KST(한국 표준시) 현재 시간 가져오기 함수 구현:
+
   ```typescript
   import { addHours } from 'date-fns';
 
@@ -238,12 +246,13 @@ interface NewsItem {
    */
   export function getKSTDate(): Date {
     const now = new Date();
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-    return new Date(utc + (9 * 60 * 60 * 1000));
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utc + 9 * 60 * 60 * 1000);
   }
   ```
 
-- [ ] 오늘 날짜 범위 가져오기 함수 구현 (FR-001-01):
+- [x] 오늘 날짜 범위 가져오기 함수 구현 (FR-001-01):
+
   ```typescript
   /**
    * 오늘 뉴스 수집 범위 반환 (0시 ~ 22시)
@@ -261,7 +270,8 @@ interface NewsItem {
   }
   ```
 
-- [ ] 날짜 범위 체크 함수 구현 (FR-001-04):
+- [x] 날짜 범위 체크 함수 구현 (FR-001-04):
+
   ```typescript
   /**
    * 날짜가 주어진 범위 내에 있는지 확인
@@ -280,15 +290,17 @@ interface NewsItem {
 
 ### 4.2. 텍스트 유사도 유틸리티 생성 (FR-001-05)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/utils/similarity.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/utils/similarity.ts` 파일 생성
 
-- [ ] 필요한 패키지 설치:
+- [x] 필요한 패키지 설치:
+
   ```bash
   pnpm add string-similarity
   pnpm add -D @types/string-similarity
   ```
 
-- [ ] 문자열 유사도 계산 함수 구현:
+- [x] 문자열 유사도 계산 함수 구현:
+
   ```typescript
   import { compareTwoStrings } from 'string-similarity';
 
@@ -302,7 +314,8 @@ interface NewsItem {
   }
   ```
 
-- [ ] 텍스트 정규화 함수 구현:
+- [x] 텍스트 정규화 함수 구현:
+
   ```typescript
   /**
    * 텍스트 정규화 (공백 제거, 소문자 변환 등)
@@ -310,22 +323,19 @@ interface NewsItem {
   export function normalizeText(text: string): string {
     return text
       .toLowerCase()
-      .replace(/\s+/g, ' ')  // 다중 공백 -> 단일 공백
+      .replace(/\s+/g, ' ') // 다중 공백 -> 단일 공백
       .trim();
   }
   ```
 
-- [ ] 중복 판단 함수 구현 (FR-001-05):
+- [x] 중복 판단 함수 구현 (FR-001-05):
+
   ```typescript
   /**
    * 두 제목이 중복인지 판단 (유사도 90% 이상)
    * FR-001-05: 유사도 90% 이상 기사 자동 제거
    */
-  export function isDuplicate(
-    title1: string,
-    title2: string,
-    threshold: number = 0.9
-  ): boolean {
+  export function isDuplicate(title1: string, title2: string, threshold: number = 0.9): boolean {
     const similarity = calculateSimilarity(title1, title2);
     return similarity >= threshold;
   }
@@ -339,9 +349,10 @@ interface NewsItem {
 
 ### 4.3. URL 검증 유틸리티 생성 (FR-001-03)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/utils/validation.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/utils/validation.ts` 파일 생성
 
-- [ ] URL 유효성 검증 함수 구현:
+- [x] URL 유효성 검증 함수 구현:
+
   ```typescript
   /**
    * URL 형식 유효성 검증
@@ -357,9 +368,10 @@ interface NewsItem {
   }
   ```
 
-- [ ] NewsItem 유효성 검증 함수 구현 (FR-001-03):
+- [x] NewsItem 유효성 검증 함수 구현 (FR-001-03):
+
   ```typescript
-  import { NewsItem } from '../modules/newsCollector/types';
+  import { NewsItem } from '../modules/news-collector/types';
 
   /**
    * NewsItem 필수 필드 유효성 검증
@@ -394,9 +406,10 @@ interface NewsItem {
 
 ### 5.1. RSS 수집기 모듈 파일 생성 (FR-001-02 소스 1)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/rssCollector.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/rss-collector.ts` 파일 생성
 
-- [ ] 필요한 패키지 설치:
+- [x] 필요한 패키지 설치:
+
   ```bash
   pnpm add rss-parser axios
   ```
@@ -406,7 +419,7 @@ interface NewsItem {
   import Parser from 'rss-parser';
   import axios from 'axios';
   import { NewsItem, CollectionResult } from './types';
-  import { isWithinRange } from '../../utils/dateTime';
+  import { isWithinRange } from '../../utils/date-time';
   import { isValidNewsItem } from '../../utils/validation';
   ```
 
@@ -432,7 +445,8 @@ interface NewsItem {
 
 ### 5.3. RSS 수집기 클래스 구현
 
-- [ ] `RSSCollector` 클래스 기본 구조 작성:
+- [x] `RSSCollector` 클래스 기본 구조 작성:
+
   ```typescript
   /**
    * RSS 피드 뉴스 수집기
@@ -455,7 +469,8 @@ interface NewsItem {
 
 ### 5.4. RSS 피드 파싱 로직 구현
 
-- [ ] 단일 RSS 피드 수집 메서드 구현:
+- [x] 단일 RSS 피드 수집 메서드 구현:
+
   ```typescript
   /**
    * 단일 RSS 피드에서 뉴스 수집
@@ -483,7 +498,7 @@ interface NewsItem {
   }
   ```
 
-- [ ] RSS 아이템을 NewsItem으로 변환 (FR-001-03):
+- [x] RSS 아이템을 NewsItem으로 변환 (FR-001-03):
   ```typescript
   /**
    * RSS 아이템을 NewsItem 형식으로 변환
@@ -511,7 +526,8 @@ interface NewsItem {
 
 ### 5.5. 시간 필터링 및 메인 수집 메서드 (FR-001-04)
 
-- [ ] 메인 수집 메서드 구현:
+- [x] 메인 수집 메서드 구현:
+
   ```typescript
   /**
    * 모든 RSS 피드에서 뉴스 수집
@@ -557,7 +573,7 @@ interface NewsItem {
 
 ### 5.7. RSS 수집기 단위 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/rssCollector.test.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/rss-collector.test.ts` 파일 생성
 - [ ] RSS 피드 파싱 성공 테스트 (Mock 데이터 사용)
 - [ ] 시간 필터링 로직 테스트
 - [ ] 잘못된 RSS 피드 처리 테스트
@@ -569,35 +585,31 @@ interface NewsItem {
 
 ### 6.1. Google News 수집기 모듈 파일 생성 (FR-001-02 소스 2)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/googleNewsCollector.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/google-news-collector.ts` 파일 생성
 
 - [ ] 필요한 라이브러리 임포트:
   ```typescript
   import Parser from 'rss-parser';
   import { NewsItem, CollectionResult } from './types';
-  import { isWithinRange } from '../../utils/dateTime';
+  import { isWithinRange } from '../../utils/date-time';
   import { isValidNewsItem } from '../../utils/validation';
   ```
 
 ### 6.2. Google News 검색 설정
 
 - [ ] Google News RSS 기본 URL 및 검색 키워드 정의:
+
   ```typescript
   const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
 
   // 한국 경제 관련 검색 키워드
-  const SEARCH_KEYWORDS = [
-    '한국경제',
-    '금융시장',
-    '주식시장',
-    '환율',
-    '부동산시장',
-  ];
+  const SEARCH_KEYWORDS = ['한국경제', '금융시장', '주식시장', '환율', '부동산시장'];
   ```
 
 ### 6.3. Google News 수집기 클래스 구현
 
 - [ ] `GoogleNewsCollector` 클래스 기본 구조:
+
   ```typescript
   /**
    * Google News RSS 뉴스 수집기
@@ -639,6 +651,7 @@ interface NewsItem {
 ### 6.5. Google News RSS 파싱 (FR-001-03)
 
 - [ ] 단일 키워드 검색 메서드 구현:
+
   ```typescript
   /**
    * 키워드로 Google News 검색
@@ -665,6 +678,7 @@ interface NewsItem {
   ```
 
 - [ ] Google News 아이템 변환 메서드:
+
   ```typescript
   /**
    * Google News RSS 아이템을 NewsItem으로 변환
@@ -705,6 +719,7 @@ interface NewsItem {
 ### 6.6. 메인 수집 메서드 및 중복 제거 (FR-001-04)
 
 - [ ] 메인 수집 메서드 구현:
+
   ```typescript
   /**
    * 모든 키워드로 Google News 검색 및 수집
@@ -761,7 +776,7 @@ interface NewsItem {
 
 ### 6.7. Google News 수집기 단위 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/googleNewsCollector.test.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/google-news-collector.test.ts` 파일 생성
 - [ ] URL 생성 테스트 (다양한 키워드)
 - [ ] Google News RSS 파싱 테스트 (Mock 데이터)
 - [ ] 언론사명 추출 테스트
@@ -773,9 +788,10 @@ interface NewsItem {
 
 ### 7.1. 웹 크롤러 모듈 파일 생성 (FR-001-02 소스 3)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/webCrawler.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/web-crawler.ts` 파일 생성
 
 - [ ] 필요한 패키지 설치:
+
   ```bash
   pnpm add cheerio axios
   ```
@@ -785,13 +801,14 @@ interface NewsItem {
   import axios from 'axios';
   import * as cheerio from 'cheerio';
   import { NewsItem, CollectionResult } from './types';
-  import { isWithinRange } from '../../utils/dateTime';
+  import { isWithinRange } from '../../utils/date-time';
   import { isValidNewsItem } from '../../utils/validation';
   ```
 
 ### 7.2. 크롤링 대상 사이트 설정
 
 - [ ] 크롤링 대상 웹사이트 설정 정의:
+
   ```typescript
   interface SiteConfig {
     name: string;
@@ -824,6 +841,7 @@ interface NewsItem {
 ### 7.3. 웹 크롤러 클래스 구현
 
 - [ ] `WebCrawler` 클래스 기본 구조:
+
   ```typescript
   /**
    * 웹 크롤링 뉴스 수집기
@@ -866,6 +884,7 @@ interface NewsItem {
 ### 7.5. HTML 파싱 및 뉴스 추출 (FR-001-03)
 
 - [ ] HTML에서 뉴스 추출 메서드 구현:
+
   ```typescript
   /**
    * HTML에서 뉴스 항목 추출
@@ -921,6 +940,7 @@ interface NewsItem {
 ### 7.6. 날짜 파싱
 
 - [ ] 날짜 파싱 메서드 구현:
+
   ```typescript
   /**
    * 다양한 날짜 형식 파싱
@@ -953,6 +973,7 @@ interface NewsItem {
 ### 7.7. 메인 수집 메서드 (FR-001-04)
 
 - [ ] 메인 수집 메서드 구현:
+
   ```typescript
   /**
    * 모든 크롤링 대상에서 뉴스 수집
@@ -1005,7 +1026,7 @@ interface NewsItem {
 
 ### 7.8. 웹 크롤러 단위 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/webCrawler.test.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/web-crawler.test.ts` 파일 생성
 - [ ] HTML 파싱 테스트 (샘플 HTML 사용)
 - [ ] 날짜 파싱 테스트 (다양한 형식)
 - [ ] URL 해석 테스트 (상대 URL → 절대 URL)
@@ -1017,7 +1038,7 @@ interface NewsItem {
 
 ### 8.1. 중복 제거 모듈 파일 생성 (FR-001-05)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/deduplicator.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/deduplicator.ts` 파일 생성
 
 - [ ] 필요한 라이브러리 임포트:
   ```typescript
@@ -1028,6 +1049,7 @@ interface NewsItem {
 ### 8.2. 중복 제거 클래스 구현
 
 - [ ] `NewsDeduplicator` 클래스 기본 구조:
+
   ```typescript
   /**
    * 뉴스 중복 제거 클래스
@@ -1068,6 +1090,7 @@ interface NewsItem {
 ### 8.4. 유사도 기반 중복 제거 (FR-001-05)
 
 - [ ] 유사도 기반 중복 제거 메서드:
+
   ```typescript
   /**
    * 제목 유사도 기반 중복 제거 (90% 이상)
@@ -1098,6 +1121,7 @@ interface NewsItem {
 ### 8.5. 메인 중복 제거 메서드
 
 - [ ] 메인 중복 제거 메서드 구현:
+
   ```typescript
   /**
    * 모든 중복 제거 로직 적용
@@ -1124,7 +1148,7 @@ interface NewsItem {
 
 ### 8.6. 중복 제거 단위 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/deduplicator.test.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/deduplicator.test.ts` 파일 생성
 - [ ] 정확한 중복 제거 테스트 (동일 URL)
 - [ ] 유사도 기반 중복 제거 테스트 (90% 이상)
 - [ ] 유사도 90% 미만은 유지되는지 테스트
@@ -1136,22 +1160,23 @@ interface NewsItem {
 
 ### 9.1. 메인 모듈 인덱스 파일 생성
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/newsCollector/index.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/index.ts` 파일 생성
 
 - [ ] 모든 수집기 임포트:
   ```typescript
-  import { RSSCollector } from './rssCollector';
-  import { GoogleNewsCollector } from './googleNewsCollector';
-  import { WebCrawler } from './webCrawler';
+  import { RSSCollector } from './rss-collector';
+  import { GoogleNewsCollector } from './google-news-collector';
+  import { WebCrawler } from './web-crawler';
   import { NewsDeduplicator } from './deduplicator';
   import { NewsItem, NewsCollectorConfig } from './types';
-  import { getTodayNewsRange } from '../../utils/dateTime';
+  import { getTodayNewsRange } from '../../utils/date-time';
   import { isValidNewsItem } from '../../utils/validation';
   ```
 
 ### 9.2. NewsCollector 메인 클래스 구현
 
 - [ ] 메인 클래스 구조:
+
   ```typescript
   /**
    * 뉴스 수집 메인 클래스
@@ -1181,6 +1206,7 @@ interface NewsItem {
 ### 9.3. 일일 뉴스 수집 메인 로직 구현 (FR-001-01)
 
 - [ ] `collectDailyNews` 메서드 구현:
+
   ```typescript
   /**
    * 일일 뉴스 수집 (0시~22시)
@@ -1268,25 +1294,23 @@ interface NewsItem {
 ### 10.2. 로거 설정 (PRD FR-007)
 
 - [ ] 로거 기본 설정:
+
   ```typescript
   import winston from 'winston';
 
   export const logger = winston.createLogger({
     level: process.env.LOG_LEVEL || 'info',
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json()
-    ),
+    format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
     transports: [
       new winston.transports.Console({
         format: winston.format.simple(),
       }),
       new winston.transports.File({
         filename: 'logs/error.log',
-        level: 'error'
+        level: 'error',
       }),
       new winston.transports.File({
-        filename: 'logs/combined.log'
+        filename: 'logs/combined.log',
       }),
     ],
   });
@@ -1295,6 +1319,7 @@ interface NewsItem {
 ### 10.3. 뉴스 수집 모듈에 로깅 통합 (FR-007-01, FR-007-02)
 
 - [ ] console.log를 logger로 교체:
+
   ```typescript
   import { logger } from '../logger';
 
@@ -1334,12 +1359,12 @@ interface NewsItem {
    * PRD 섹션 5.1 참조
    */
   export const NEWS_COLLECTOR_CONFIG = {
-    MIN_NEWS_COUNT: 20,              // FR-001 Acceptance Criteria
-    SIMILARITY_THRESHOLD: 0.9,       // FR-001-05: 90% 유사도
-    REQUEST_TIMEOUT: 30000,          // PRD TR-004-03: 30초
-    RETRY_ATTEMPTS: 3,               // PRD TR-004-02: 3회 재시도
-    RETRY_DELAY: 1000,               // 1초
-    CRAWL_DELAY: 2000,               // 크롤링 딜레이 2초
+    MIN_NEWS_COUNT: 20, // FR-001 Acceptance Criteria
+    SIMILARITY_THRESHOLD: 0.9, // FR-001-05: 90% 유사도
+    REQUEST_TIMEOUT: 30000, // PRD TR-004-03: 30초
+    RETRY_ATTEMPTS: 3, // PRD TR-004-02: 3회 재시도
+    RETRY_DELAY: 1000, // 1초
+    CRAWL_DELAY: 2000, // 크롤링 딜레이 2초
   };
   ```
 
@@ -1359,15 +1384,7 @@ interface NewsItem {
 
 - [ ] 검색 키워드 배열 정의:
   ```typescript
-  export const GOOGLE_NEWS_KEYWORDS = [
-    '한국경제',
-    '금융시장',
-    '주식시장',
-    '환율',
-    '부동산시장',
-    '금리',
-    '코스피',
-  ];
+  export const GOOGLE_NEWS_KEYWORDS = ['한국경제', '금융시장', '주식시장', '환율', '부동산시장', '금리', '코스피'];
   ```
 
 ### 11.5. 모듈에서 설정 사용
@@ -1386,6 +1403,7 @@ interface NewsItem {
 - [ ] `/Users/kim-yongbin/projects/economic-podcast/src/utils/retry.ts` 파일 생성
 
 - [ ] exponential backoff 재시도 함수 구현:
+
   ```typescript
   /**
    * Exponential backoff 재시도 로직
@@ -1407,7 +1425,7 @@ interface NewsItem {
         if (attempt < maxRetries) {
           const delay = initialDelay * Math.pow(2, attempt);
           console.log(`재시도 ${attempt + 1}/${maxRetries} (${delay}ms 후)`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
@@ -1466,7 +1484,7 @@ interface NewsItem {
 
 #### 날짜/시간 유틸리티 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/utils/dateTime.test.ts` 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/utils/date-time.test.ts` 생성
 - [ ] `getKSTDate()` 테스트
 - [ ] `getTodayNewsRange()` 테스트 (0시, 22시 경계값)
 - [ ] `isWithinRange()` 테스트
@@ -1486,7 +1504,7 @@ interface NewsItem {
 
 ### 13.3. RSS Collector 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/rssCollector.test.ts` 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/rss-collector.test.ts` 생성
 - [ ] Mock RSS 피드 데이터 작성
 - [ ] RSS 파싱 성공 테스트
 - [ ] 시간 필터링 테스트
@@ -1495,7 +1513,7 @@ interface NewsItem {
 
 ### 13.4. Google News Collector 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/googleNewsCollector.test.ts` 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/google-news-collector.test.ts` 생성
 - [ ] 검색 URL 생성 테스트
 - [ ] Google News RSS 파싱 테스트
 - [ ] 언론사명 추출 테스트
@@ -1503,7 +1521,7 @@ interface NewsItem {
 
 ### 13.5. Web Crawler 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/webCrawler.test.ts` 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/web-crawler.test.ts` 생성
 - [ ] HTML 파싱 테스트 (샘플 HTML 사용)
 - [ ] 날짜 파싱 테스트 (다양한 형식)
 - [ ] URL 해석 테스트
@@ -1511,7 +1529,7 @@ interface NewsItem {
 
 ### 13.6. Deduplicator 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/deduplicator.test.ts` 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/deduplicator.test.ts` 생성
 - [ ] URL 기반 중복 제거 테스트
 - [ ] 유사도 기반 중복 제거 테스트 (90% 임계값)
 - [ ] 89% 유사도는 유지되는지 테스트
@@ -1519,7 +1537,7 @@ interface NewsItem {
 
 ### 13.7. NewsCollector 메인 클래스 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/newsCollector/newsCollector.test.ts` 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/news-collector.test.ts` 생성
 - [ ] `collectDailyNews()` 메서드 테스트 (Mock 사용)
 - [ ] 최소 개수 미달 시 에러 테스트
 - [ ] 유효성 검증 테스트
@@ -1530,11 +1548,12 @@ interface NewsItem {
 
 ### 14.1. 통합 테스트 파일 생성
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/integration/newsCollector.test.ts` 파일 생성
+- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/integration/news-collector.test.ts` 파일 생성
 
 ### 14.2. 전체 파이프라인 통합 테스트
 
 - [ ] 실제 뉴스 수집 end-to-end 테스트:
+
   ```typescript
   describe('NewsCollector 통합 테스트', () => {
     it('실제 소스에서 뉴스 수집 및 처리', async () => {
@@ -1545,7 +1564,7 @@ interface NewsItem {
       expect(news.length).toBeGreaterThanOrEqual(20);
 
       // 모든 뉴스 필수 필드 확인 (FR-001-03)
-      news.forEach(item => {
+      news.forEach((item) => {
         expect(item.title).toBeTruthy();
         expect(item.summary).toBeTruthy();
         expect(item.url).toBeTruthy();
@@ -1554,7 +1573,7 @@ interface NewsItem {
       });
 
       // 중복 없음 확인 (FR-001-05)
-      const urls = news.map(n => n.url);
+      const urls = news.map((n) => n.url);
       const uniqueUrls = new Set(urls);
       expect(urls.length).toBe(uniqueUrls.size);
     }, 30000); // 타임아웃 30초
@@ -1651,6 +1670,7 @@ interface NewsItem {
 ### 16.1. 성능 측정 (PRD NFR-PERF-01)
 
 - [ ] 각 수집 단계별 시간 측정 추가:
+
   ```typescript
   const startTime = Date.now();
   // ... 수집 로직
@@ -1686,6 +1706,7 @@ interface NewsItem {
 ### 17.1. 코드 문서화 (PRD NFR-MAIN-02)
 
 - [ ] 모든 공개 함수/클래스에 JSDoc 주석 추가:
+
   ```typescript
   /**
    * 일일 한국 경제 뉴스 수집
@@ -1722,9 +1743,10 @@ interface NewsItem {
 ### 17.3. 사용 예시 문서
 
 - [ ] README 또는 별도 문서에 사용 예시 추가:
+
   ```typescript
   // 기본 사용
-  import { NewsCollector } from './modules/newsCollector';
+  import { NewsCollector } from './modules/news-collector';
 
   const collector = new NewsCollector();
   const news = await collector.collectDailyNews();
@@ -1749,11 +1771,13 @@ interface NewsItem {
 ### 18.1. 코드 품질 검사
 
 - [ ] ESLint 실행 및 모든 에러 수정:
+
   ```bash
   pnpm run lint
   ```
 
 - [ ] Prettier로 코드 포맷팅:
+
   ```bash
   pnpm run format
   ```
@@ -1795,6 +1819,7 @@ interface NewsItem {
 ### 19.1. 테스트 커버리지 확인 (PRD NFR-MAIN-01)
 
 - [ ] 테스트 커버리지 리포트 생성:
+
   ```bash
   pnpm test -- --coverage
   ```
@@ -1805,11 +1830,13 @@ interface NewsItem {
 ### 19.2. 전체 테스트 실행
 
 - [ ] 모든 단위 테스트 실행:
+
   ```bash
   pnpm test tests/unit/
   ```
 
 - [ ] 모든 통합 테스트 실행:
+
   ```bash
   pnpm test tests/integration/
   ```
@@ -1820,9 +1847,10 @@ interface NewsItem {
 ### 19.3. 수동 검증
 
 - [ ] 테스트 스크립트 작성 및 실행:
+
   ```typescript
   // test-collector-manual.ts
-  import { NewsCollector } from './modules/newsCollector';
+  import { NewsCollector } from './modules/news-collector';
 
   async function test() {
     const collector = new NewsCollector();
@@ -1850,11 +1878,13 @@ interface NewsItem {
 ### 19.5. Git 커밋 및 PR 준비
 
 - [ ] feature 브랜치 생성:
+
   ```bash
   git checkout -b feature/fr-001-news-collector
   ```
 
 - [ ] 의미 있는 커밋 메시지로 커밋:
+
   ```bash
   git commit -m "feat(news-collector): RSS 피드 수집기 구현"
   git commit -m "feat(news-collector): Google News 수집기 구현"
@@ -1930,10 +1960,10 @@ interface NewsItem {
 **모듈:** FR-001 뉴스 수집 모듈
 **상태:** [ ] 완료 / [ ] 진행 중 / [ ] 시작 전
 
-**구현 완료자:** _______________
-**완료 날짜:** _______________
-**검토자:** _______________
-**검토 날짜:** _______________
+**구현 완료자:** **\*\***\_\_\_**\*\***
+**완료 날짜:** **\*\***\_\_\_**\*\***
+**검토자:** **\*\***\_\_\_**\*\***
+**검토 날짜:** **\*\***\_\_\_**\*\***
 
 ---
 

@@ -596,37 +596,37 @@ economic-podcast/
 │   │   ├── env.ts               # 환경 변수 설정
 │   │   └── constants.ts         # 상수 정의
 │   ├── scheduler/
-│   │   └── dailyJob.ts          # 스케줄러 설정
+│   │   └── daily-job.ts          # 스케줄러 설정
 │   ├── modules/
-│   │   ├── newsCollector/
+│   │   ├── news-collector/
 │   │   │   ├── index.ts
-│   │   │   ├── rssCollector.ts
-│   │   │   ├── googleNewsCollector.ts
+│   │   │   ├── rss-collector.ts
+│   │   │   ├── google-news-collector.ts
 │   │   │   └── types.ts
-│   │   ├── issueExtractor/
+│   │   ├── issue-extractor/
 │   │   │   ├── index.ts
-│   │   │   ├── keywordAnalyzer.ts
-│   │   │   ├── llmExtractor.ts
+│   │   │   ├── keyword-analyzer.ts
+│   │   │   ├── llm-extractor.ts
 │   │   │   └── types.ts
-│   │   ├── scriptGenerator/
+│   │   ├── script-generator/
 │   │   │   ├── index.ts
-│   │   │   ├── promptTemplates.ts
+│   │   │   ├── prompt-templates.ts
 │   │   │   └── types.ts
-│   │   ├── videoGenerator/
+│   │   ├── video-generator/
 │   │   │   ├── index.ts
-│   │   │   ├── heygenClient.ts
+│   │   │   ├── heygen-client.ts
 │   │   │   └── types.ts
-│   │   ├── youtubeUploader/
+│   │   ├── youtube-uploader/
 │   │   │   ├── index.ts
 │   │   │   ├── oauth.ts
 │   │   │   ├── uploader.ts
 │   │   │   └── types.ts
 │   │   └── logger/
 │   │       ├── index.ts
-│   │       └── slackNotifier.ts
+│   │       └── slack-notifier.ts
 │   └── utils/
-│       ├── dateTime.ts
-│       ├── fileHandler.ts
+│       ├── date-time.ts
+│       ├── file-handler.ts
 │       └── retry.ts
 ├── data/
 │   ├── scripts/                 # 생성된 대본 저장
