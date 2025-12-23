@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Express } from 'express';
 import { env } from './config/env.js';
 
-const app = express();
+const app: Express = express();
 const PORT = env.port;
 
 app.set('port', PORT);
