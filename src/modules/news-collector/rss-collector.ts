@@ -5,6 +5,9 @@ import { isWithinRange } from '@/utils/date-time.js';
 
 const RSS_FEEDS = [
   { name: '조선일보', url: 'https://www.chosun.com/arc/outboundfeeds/rss/category/economy/?outputType=xml' },
+  { name: '동아일보', url: 'https://rss.donga.com/economy.xml' },
+  { name: '매일경제', url: 'https://www.mk.co.kr/rss/30100041/' },
+  { name: '한국경제', url: 'https://www.hankyung.com/feed/economy' },
 ];
 
 export class RSSCollector {

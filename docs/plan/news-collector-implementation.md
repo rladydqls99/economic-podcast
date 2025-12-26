@@ -297,7 +297,7 @@ interface NewsItem {
 
 ✅ **구현 완료** - 이 유틸리티는 섹션 8 중복 제거에 사용됨
 
-- [x] `/Users/kim-yongbin/projects/economic-podcast/src/utils/similarity.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/utils/text-similarity.ts` 파일 생성 ✅ **구현됨** (파일명이 `similarity.ts` → `text-similarity.ts`로 변경됨)
 
 - [x] 필요한 패키지 설치:
 
@@ -541,13 +541,13 @@ interface NewsItem {
 
 ## 6. Google News 수집기 구현
 
-❌ **미구현**
+✅ **구현 완료**
 
 ### 6.1. Google News 수집기 모듈 파일 생성 (FR-001-02 소스 2)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/google-news-collector.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/google-news-collector.ts` 파일 생성 ✅ **구현됨**
 
-- [ ] 필요한 라이브러리 임포트:
+- [x] 필요한 라이브러리 임포트: ✅ **구현됨**
   ```typescript
   import Parser from 'rss-parser';
   import { NewsItem, CollectionResult } from './types';
@@ -557,7 +557,7 @@ interface NewsItem {
 
 ### 6.2. Google News 검색 설정
 
-- [ ] Google News RSS 기본 URL 및 검색 키워드 정의:
+- [x] Google News RSS 기본 URL 및 검색 키워드 정의: ✅ **구현됨**
 
   ```typescript
   const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
@@ -568,7 +568,7 @@ interface NewsItem {
 
 ### 6.3. Google News 수집기 클래스 구현
 
-- [ ] `GoogleNewsCollector` 클래스 기본 구조:
+- [x] `GoogleNewsCollector` 클래스 기본 구조: ✅ **구현됨**
 
   ```typescript
   /**
@@ -592,7 +592,7 @@ interface NewsItem {
 
 ### 6.4. Google News 검색 URL 생성
 
-- [ ] 검색 URL 생성 메서드 구현:
+- [x] 검색 URL 생성 메서드 구현: ✅ **구현됨**
   ```typescript
   /**
    * Google News RSS 검색 URL 생성
@@ -610,7 +610,7 @@ interface NewsItem {
 
 ### 6.5. Google News RSS 파싱 (FR-001-03)
 
-- [ ] 단일 키워드 검색 메서드 구현:
+- [x] 단일 키워드 검색 메서드 구현: ✅ **구현됨**
 
   ```typescript
   /**
@@ -637,7 +637,7 @@ interface NewsItem {
   }
   ```
 
-- [ ] Google News 아이템 변환 메서드:
+- [x] Google News 아이템 변환 메서드: ✅ **구현됨**
 
   ```typescript
   /**
@@ -664,7 +664,7 @@ interface NewsItem {
   }
   ```
 
-- [ ] 언론사명 추출 헬퍼 메서드:
+- [x] 언론사명 추출 헬퍼 메서드: ✅ **구현됨**
   ```typescript
   /**
    * 제목에서 언론사명 추출
@@ -678,7 +678,7 @@ interface NewsItem {
 
 ### 6.6. 메인 수집 메서드 및 중복 제거 (FR-001-04)
 
-- [ ] 메인 수집 메서드 구현:
+- [x] 메인 수집 메서드 구현: ✅ **구현됨**
 
   ```typescript
   /**
@@ -724,7 +724,7 @@ interface NewsItem {
   }
   ```
 
-- [ ] 딜레이 헬퍼 메서드:
+- [x] 딜레이 헬퍼 메서드: ✅ **구현됨**
   ```typescript
   /**
    * Rate limiting을 위한 딜레이
@@ -735,6 +735,8 @@ interface NewsItem {
   ```
 
 ### 6.7. Google News 수집기 단위 테스트
+
+❌ **미구현**
 
 - [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/google-news-collector.test.ts` 파일 생성
 - [ ] URL 생성 테스트 (다양한 키워드)
@@ -1887,11 +1889,11 @@ interface NewsItem {
 
 ### 20.1. 기능 요구사항 완료 확인
 
-- [x] **FR-001-01**: 당일 0시~22시 뉴스 수집 구현 ✅ **부분 완료 (RSS만)**
-- [ ] **FR-001-02**: 3개 이상 뉴스 소스 구현 (RSS, Google News, 웹 크롤링) ⚠️ **1/3 완료**
+- [x] **FR-001-01**: 당일 0시~22시 뉴스 수집 구현 ✅ **완료 (RSS + Google News)**
+- [ ] **FR-001-02**: 3개 이상 뉴스 소스 구현 (RSS, Google News, 웹 크롤링) ⚠️ **2/3 완료**
 - [x] **FR-001-03**: 모든 필수 필드 추출 및 검증 구현 ✅ **Zod로 완료**
 - [x] **FR-001-04**: 날짜 기반 필터링 구현 ✅ **완료**
-- [ ] **FR-001-05**: 중복 제거 (90% 유사도) 구현 및 테스트 완료 ❌ **미구현**
+- [ ] **FR-001-05**: 중복 제거 (90% 유사도) 구현 및 테스트 완료 ⚠️ **유틸리티 구현됨, Deduplicator 미구현**
 
 ### 20.2. Acceptance Criteria 완료 확인
 
@@ -1912,10 +1914,10 @@ interface NewsItem {
 
 ### 20.4. 테스트 요구사항 완료 확인
 
-- [ ] 모든 주요 함수 단위 테스트 작성 ❌ **0% 완료**
+- [ ] 모든 주요 함수 단위 테스트 작성 ⚠️ **부분 완료 (date-time, text-similarity, validation, rss-collector 기본)**
 - [ ] End-to-end 통합 테스트 작성 ❌ **0% 완료**
-- [ ] 테스트 커버리지 >= 70% ❌ **0% 완료**
-- [ ] 모든 테스트 통과 ❌ **0% 완료**
+- [ ] 테스트 커버리지 >= 70% ❌ **미측정**
+- [ ] 모든 테스트 통과 ⚠️ **작성된 테스트는 통과**
 - [ ] 수동 테스트 완료 ❌ **미완료**
 
 ### 20.5. 문서화 요구사항 완료 확인
@@ -1949,23 +1951,21 @@ interface NewsItem {
 
 ## 다음 단계
 
-**현재 완료된 작업 (섹션 2-5.6, 약 30% 진행)**:
+**현재 완료된 작업 (섹션 2-6.6, 약 45% 진행)**:
 
 1. ✅ 환경 설정 완료
 2. ✅ 타입 정의 완료 (Zod 사용)
 3. ✅ 날짜/시간 유틸리티 완료
-4. ✅ RSS Collector 구현 완료
-5. ⚠️ 단일 RSS 피드만 설정됨 (추가 필요)
+4. ✅ 텍스트 유사도 유틸리티 완료 (text-similarity.ts)
+5. ✅ RSS Collector 구현 완료 (4개 피드)
+6. ✅ Google News Collector 구현 완료 (5개 키워드)
 
 **즉시 진행해야 할 작업**:
 
-1. **섹션 5.7**: RSS Collector 테스트 작성 (우선순위 HIGH)
-2. **섹션 4.2**: similarity.ts 유틸리티 구현 (섹션 8에 필요)
-3. **섹션 5.2**: 추가 RSS 피드 URL 설정 (한국경제, 매일경제, 서울경제)
-4. **섹션 6**: Google News 수집기 구현
-5. **섹션 7**: 웹 크롤러 구현
-6. **섹션 8**: 중복 제거 로직 구현
-7. **섹션 9**: 메인 NewsCollector 통합 클래스 구현
+1. **섹션 6.7**: Google News Collector 테스트 작성 (우선순위 HIGH)
+2. **섹션 7**: 웹 크롤러 구현
+3. **섹션 8**: 중복 제거 로직 구현
+4. **섹션 9**: 메인 NewsCollector 통합 클래스 구현
 
 **추후 진행 사항**:
 
@@ -2002,11 +2002,21 @@ interface NewsItem {
 2. similarity.ts 구현하여 섹션 8 준비
 3. RSS_FEEDS에 추가 피드 URL 설정
 4. console.error를 logger로 교체할 준비
+
+[2025-12-26] [진행 업데이트]
+- ✅ text-similarity.ts 구현 완료 (파일명 변경: similarity.ts → text-similarity.ts)
+- ✅ text-similarity.test.ts 테스트 완료 (290줄, FR-001-05 검증 포함)
+- ✅ Google News Collector 구현 완료 (google-news-collector.ts)
+- ✅ RSS Collector 4개 피드로 확장 (조선일보, 동아일보, 매일경제, 한국경제)
+- ⚠️ Google News Collector 테스트 미작성 (섹션 6.7)
+- ❌ Web Crawler 미구현 (섹션 7)
+- ❌ Deduplicator 미구현 (섹션 8)
+- ❌ 메인 NewsCollector 통합 클래스 미구현 (섹션 9)
 ```
 
 ---
 
-**최종 업데이트:** 2025-12-22
-**문서 버전:** 1.1
+**최종 업데이트:** 2025-12-26
+**문서 버전:** 1.2
 **작성자:** 개발팀
 **분석자:** Claude Code Agent
