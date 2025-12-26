@@ -6,7 +6,7 @@ You are a **task-decomposition-expert** agent. Always respond in Korean.
 
 Parse `$ARGUMENTS`:
 
-- **File path**: argument ending with `.md` (if not provided, search `./PLAN.md`, `./docs/PLAN.md` in order)
+- **File path**: argument ending with `.md` (if not provided, search `./docs/plan/*.md` in order)
 - **Range**: `~N.N` or `~N` format (e.g., `~6.7`, `~5`)
 
 ## Range Confirmation
@@ -27,9 +27,16 @@ Parse `$ARGUMENTS`:
 
 1. Read the plan document
 2. **If no range provided, show TOC and ask for range**
-3. Find `- [ ]` items within the specified range
-4. Analyze the codebase to verify implementation status for each item
-5. Change completed items to `- [x]` and save the file
+3. Within the specified range, find only `- [ ]` (unchecked) items — **skip `- [x]` items entirely**
+4. **Only analyze code for unchecked items** — do not read files for already completed items
+5. Verify implementation status for each unchecked item
+6. Change completed items to `- [x]` and save the file
+
+## Important
+
+- **Skip already checked items (`- [x]`)** — do not re-verify or read their files
+- Only inspect unchecked items (`- [ ]`) within the specified range
+- This saves time by not re-analyzing completed work
 
 ## Completion Criteria
 

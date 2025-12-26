@@ -37,8 +37,41 @@ Parse `$ARGUMENTS`:
 ## Test Writing Guidelines
 
 - Follow the project's existing test patterns and structure
-- Include boundary values, error cases, and normal cases
-- If tests specified in the plan are insufficient, write additional test cases
+- **Write `describe` and `it` descriptions in Korean**
+
+### Required Test Cases
+
+For each test target, **always write all of the following test types**, even if not specified in the plan:
+
+1. **Normal cases**: Basic functionality with valid inputs
+2. **Boundary cases**: Empty arrays, zero values, min/max limits, single item
+3. **Error cases**: Invalid inputs, null/undefined, network failures, timeouts
+4. **Edge cases**: Special characters, very long strings, concurrent calls
+
+### Example
+
+```typescript
+describe('GoogleNewsCollector', () => {
+  describe('collectNews', () => {
+    // Normal cases
+    it('시간 범위 내의 뉴스만 반환해야 한다', () => {});
+    it('여러 키워드에서 뉴스를 수집해야 한다', () => {});
+
+    // Boundary cases
+    it('뉴스가 없을 경우 빈 배열을 반환해야 한다', () => {});
+    it('시간 범위 경계값(0시, 22시)을 올바르게 처리해야 한다', () => {});
+
+    // Error cases
+    it('네트워크 오류 시 에러를 적절히 처리해야 한다', () => {});
+    it('타임아웃 발생 시 빈 배열을 반환해야 한다', () => {});
+    it('잘못된 URL 형식을 처리해야 한다', () => {});
+
+    // Edge cases
+    it('특수문자가 포함된 제목을 올바르게 파싱해야 한다', () => {});
+    it('중복 URL이 있을 경우 하나만 유지해야 한다', () => {});
+  });
+});
+```
 
 ## Output
 
