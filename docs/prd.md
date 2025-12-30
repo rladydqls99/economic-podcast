@@ -162,8 +162,13 @@
   - 발행 시간 (필수)
   - 언론사명 (필수)
   - 카테고리 (선택)
-- FR-001-04: 수집된 뉴스는 발행 시간 기준으로 필터링되어야 함
-- FR-001-05: 중복 제목 또는 유사도 90% 이상 기사는 자동 제거되어야 함
+  - **기사 본문 (필수)** - RSS/API에서 링크만 제공하는 경우, 각 링크를 크롤링하여 본문 추출
+- FR-001-04: 기사 본문 추출은 다음을 지원해야 함
+  - 정적 HTML 페이지: Cheerio 사용
+  - 동적 콘텐츠 ("더보기" 버튼, 무한 스크롤 등): Playwright 사용
+  - 사이트별 최적화된 셀렉터 및 파싱 로직
+- FR-001-05: 수집된 뉴스는 발행 시간 기준으로 필터링되어야 함
+- FR-001-06: 중복 제목 또는 유사도 90% 이상 기사는 자동 제거되어야 함
 
 **Acceptance Criteria:**
 
@@ -178,9 +183,11 @@ And 수집 완료 로그가 기록되어야 함
 
 **기술적 의존성:**
 
-- RSS 파서 라이브러리
-- 웹 크롤링 라이브러리 (Puppeteer 또는 Cheerio)
+- RSS 파서 라이브러리 (rss-parser)
+- 정적 HTML 파싱: Cheerio
+- 동적 콘텐츠 크롤링: Playwright (헤드리스 브라우저)
 - 날짜/시간 처리 라이브러리
+- 텍스트 유사도 계산: string-similarity
 
 ---
 
@@ -418,10 +425,14 @@ And 중요 에러는 알림으로 전송되어야 함
 
 - node-cron: 스케줄링
 - axios: HTTP 클라이언트
-- cheerio: 웹 크롤링
+- cheerio: 정적 HTML 파싱
+- playwright: 동적 콘텐츠 크롤링 (헤드리스 브라우저)
+- rss-parser: RSS 피드 파싱
+- string-similarity: 텍스트 유사도 계산
 - winston: 로깅
 - dotenv: 환경 변수 관리
 - googleapis: YouTube API 클라이언트
+- zod: 런타임 타입 검증
 
 **외부 API:**
 
@@ -599,9 +610,16 @@ economic-podcast/
 │   │   └── daily-job.ts          # 스케줄러 설정
 │   ├── modules/
 │   │   ├── news-collector/
-│   │   │   ├── index.ts
-│   │   │   ├── rss-collector.ts
-│   │   │   ├── google-news-collector.ts
+│   │   │   ├── google-news/
+│   │   │   │   ├── collector.ts      # RSS에서 기사 목록 수집
+│   │   │   │   └── extractor.ts      # 각 링크의 본문 추출
+│   │   │   ├── naver-news/
+│   │   │   │   ├── collector.ts      # 네이버 API/크롤링
+│   │   │   │   └── extractor.ts      # 네이버 기사 본문 추출
+│   │   │   ├── shared/
+│   │   │   │   ├── playwright-manager.ts  # 브라우저 풀 관리
+│   │   │   │   └── cheerio-utils.ts       # 공통 유틸
+│   │   │   ├── index.ts              # 메인 통합 클래스
 │   │   │   └── types.ts
 │   │   ├── issue-extractor/
 │   │   │   ├── index.ts
@@ -682,6 +700,7 @@ interface NewsItem {
   publishedAt: Date; // 발행 시간
   source: string; // 언론사명
   category?: string; // 카테고리
+  content?: string; // 기사 본문 (크롤링으로 추출)
 }
 ```
 

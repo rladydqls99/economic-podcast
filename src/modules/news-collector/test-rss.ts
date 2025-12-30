@@ -43,4 +43,5 @@ async function testGoogleNewsCollector() {
 }
 
 testGoogleNewsCollector();
+
 //npx tsx src/modules/news-collector/test-rss.ts
