@@ -10,6 +10,7 @@ export const NewsItemSchema = z.object({
   publishedAt: z.date(), // 발행 시간 (필수)
   source: z.string().min(1), // 언론사명 (필수)
   category: z.string().optional(), // 카테고리 (선택)
+  content: z.string().optional(), // 기사 본문 (선택, Extractor에서 추가)
 });
 
 export type NewsItem = z.infer<typeof NewsItemSchema>;

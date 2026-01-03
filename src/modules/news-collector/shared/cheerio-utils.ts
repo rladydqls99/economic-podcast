@@ -33,8 +33,10 @@ export function extractArticleContent(html: string, selectors: string[]): string
 export function cleanHtml(html: string): string {
   const $ = cheerio.load(html);
 
-  // 광고, 스크립트, 스타일 제거
-  $('script, style, iframe, .ad, .advertisement').remove();
+  // 광고, 스크립트, 스타일, 이미지 관련 요소 제거
+  $('script, style, iframe, figure, .ad, .advertisement').remove();
+  // 구글 뉴스 불필요한 요소
+  $('.head_view').remove();
 
   return $.html() || '';
 }

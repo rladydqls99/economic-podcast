@@ -1,47 +1,11 @@
-import { GoogleNewsCollector } from './google-news/collector.js';
-import { RSSCollector } from './rss/collector.js';
-
-async function testRSSCollector() {
-  console.log('🧪 RSS Collector 테스트 시작...\n');
-
-  const collector = new RSSCollector();
-
-  // 지난 24시간의 뉴스 수집
-  const endTime = new Date();
-  const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
-
-  console.log(`📅 수집 기간: ${startTime.toLocaleString('ko-KR')} ~ ${endTime.toLocaleString('ko-KR')}\n`);
-
-  try {
-    const res = await collector.collectNews(startTime, endTime);
-    console.log('\n✅ 테스트 완료!');
-    console.log(res);
-  } catch (error) {
-    console.error('\n❌ 테스트 실패:', error);
-  }
-}
-
-testRSSCollector();
-
-async function testGoogleNewsCollector() {
-  console.log('🧪 Google News Collector 테스트 시작...\n');
-
-  const collector = new GoogleNewsCollector();
-
-  const endTime = new Date();
-  const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
-
-  console.log(`📅 수집 기간: ${startTime.toLocaleString('ko-KR')} ~ ${endTime.toLocaleString('ko-KR')}\n`);
-
-  try {
-    const res = await collector.collectNews(startTime, endTime);
-    console.log('\n✅ 테스트 완료!');
-    console.log(res);
-  } catch (error) {
-    console.error('\n❌ 테스트 실패:', error);
-  }
-}
-
-testGoogleNewsCollector();
-
 //npx tsx src/modules/news-collector/test-rss.ts
+
+import { GoogleNewsService } from './google-news/service.js';
+
+const googleNewsService = new GoogleNewsService();
+
+const before = new Date();
+before.setDate(before.getDate() - 1);
+const after = new Date();
+
+googleNewsService.collectNews(before, after);

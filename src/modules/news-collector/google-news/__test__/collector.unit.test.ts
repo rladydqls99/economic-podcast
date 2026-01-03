@@ -19,13 +19,13 @@ describe('모듈 내보내기 (Module exports)', () => {
     const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
     expect(collector).toBeDefined();
-    expect(collector.collectNews).toBeDefined();
-    expect(typeof collector.collectNews).toBe('function');
+    expect(collector.collectMetadata).toBeDefined();
+    expect(typeof collector.collectMetadata).toBe('function');
   });
 });
 
 describe('수집 결과 구조 (CollectionResult structure)', () => {
-  it('collectNews 메서드가 올바른 반환 타입을 가져야 함', async () => {
+  it('collectMetadata 메서드가 올바른 반환 타입을 가져야 함', async () => {
     const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
 
@@ -34,7 +34,7 @@ describe('수집 결과 구조 (CollectionResult structure)', () => {
 
     // 실제로 Google News를 가져오려 시도하며, 테스트 환경에서 실패할 수 있음
     // 메서드가 존재하고 Promise를 반환하는지만 검증
-    const resultPromise = collector.collectNews(startTime, endTime);
+    const resultPromise = collector.collectMetadata(startTime, endTime);
     expect(resultPromise).toBeInstanceOf(Promise);
 
     try {
@@ -132,7 +132,7 @@ describe('URL 중복 제거 기능 (URL deduplication feature)', () => {
     const endTime = new Date('2025-01-15T22:00:00');
 
     try {
-      const result = await collector.collectNews(startTime, endTime);
+      const result = await collector.collectMetadata(startTime, endTime);
 
       // duplicatesRemoved 필드가 존재하는지 검증 (0이어도 됨)
       expect(result).toHaveProperty('duplicatesRemoved');

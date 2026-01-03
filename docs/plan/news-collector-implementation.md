@@ -212,11 +212,11 @@ src/modules/news-collector/
 
 ### 9.1. Google News Extractor 파일 생성
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/google-news/extractor.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/google-news/extractor.ts` 파일 생성
 
 ### 9.2. Extractor 클래스 구현
 
-- [ ] 기본 구조 작성:
+- [x] 기본 구조 작성:
 
   ```typescript
   import { playwrightManager } from '../shared/playwright-manager.js';
@@ -295,7 +295,8 @@ src/modules/news-collector/
 
 ### 9.3. Google News Collector와 Extractor 통합
 
-- [ ] `google-news/collector.ts` 수정하여 Extractor 호출 추가:
+- [x] `google-news/collector.ts` 수정하여 Extractor 호출 추가:
+- [x] **추가 구현**: `google-news/service.ts` 생성 (Service 레이어 패턴)
 
   ```typescript
   import { GoogleNewsExtractor } from './extractor.js';
@@ -330,7 +331,7 @@ src/modules/news-collector/
 
 ### 9.4. Google News Extractor 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/google-news/extractor.test.ts` 생성
+- [ ] ⚠️ **미완료**: 테스트 파일은 아직 생성되지 않음
 - [ ] 단일 기사 본문 추출 테스트
 - [ ] 여러 기사 일괄 처리 테스트
 - [ ] 추출 실패 시 원본 반환 테스트

@@ -1,4 +1,3 @@
-import { env } from '@/config/env.js';
 import Parser from 'rss-parser';
 import { CollectionResult, isValidNewsItem, NewsItem } from '../types.js';
 import { isWithinRange } from '@/utils/date-time.js';
@@ -15,7 +14,7 @@ export class RSSCollector {
 
   constructor() {
     this.parser = new Parser({
-      timeout: env.newsCollectionTimeout, // 30 seconds timeout
+      timeout: 30000, // 30 seconds timeout
     });
   }
 
