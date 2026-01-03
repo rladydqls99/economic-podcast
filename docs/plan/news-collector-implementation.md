@@ -5,6 +5,7 @@
 **⚠️ 아키텍처 변경**: 기존 flat 구조에서 **사이트별 독립 구조 (Option B)**로 전환합니다.
 
 **변경 이유:**
+
 - Google News RSS와 Naver API는 기사 **링크만** 제공 (본문 제공 안 함)
 - 각 링크의 본문을 크롤링하려면 **사이트별 최적화된 Extractor** 필요
 - 동적 콘텐츠("더보기" 버튼 등)는 Playwright, 정적 페이지는 Cheerio 사용
@@ -49,6 +50,7 @@
 ### 7.4. 아키텍처 개요 문서화
 
 **새로운 구조:**
+
 ```
 src/modules/news-collector/
 ├── google-news/
@@ -67,6 +69,7 @@ src/modules/news-collector/
 ```
 
 **책임 분리:**
+
 - **Collector**: API/RSS에서 기사 메타데이터(제목, 링크, 날짜) 수집
 - **Extractor**: 각 기사 링크에서 본문 추출
 - **Shared**: 여러 Extractor에서 공통으로 사용하는 유틸리티
@@ -157,10 +160,7 @@ src/modules/news-collector/
   /**
    * HTML에서 본문 텍스트 추출 (공통 패턴)
    */
-  export function extractArticleContent(
-    html: string,
-    selectors: string[]
-  ): string | null {
+  export function extractArticleContent(html: string, selectors: string[]): string | null {
     const $ = cheerio.load(html);
 
     for (const selector of selectors) {
@@ -188,10 +188,7 @@ src/modules/news-collector/
   /**
    * 메타 태그에서 정보 추출
    */
-  export function extractMetaContent(
-    html: string,
-    property: string
-  ): string | null {
+  export function extractMetaContent(html: string, property: string): string | null {
     const $ = cheerio.load(html);
     return $(`meta[property="${property}"]`).attr('content') || null;
   }
@@ -331,11 +328,15 @@ src/modules/news-collector/
 
 ### 9.4. Google News Extractor 테스트
 
-- [ ] ⚠️ **미완료**: 테스트 파일은 아직 생성되지 않음
-- [ ] 단일 기사 본문 추출 테스트
-- [ ] 여러 기사 일괄 처리 테스트
-- [ ] 추출 실패 시 원본 반환 테스트
-- [ ] Rate limiting 테스트
+- [x] ✅ **완료**: 테스트 파일 생성 완료
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/google-news/__test__/extractor.unit.test.ts` 생성
+- [x] 단일 기사 본문 추출 테스트 (구조 검증)
+- [x] 여러 기사 일괄 처리 테스트 (구조 검증)
+- [x] 추출 실패 시 원본 반환 테스트 (구조 검증)
+- [x] Rate limiting 테스트 (구조 검증)
+- [x] FR-001-03: 기사 본문 필수 필드 추출 검증
+- [x] FR-001-04: 동적 콘텐츠 지원 검증
+- [x] 빈 배열 처리 테스트
 
 ---
 
@@ -388,10 +389,7 @@ src/modules/news-collector/
 
           // 시간 필터링 및 중복 제거
           for (const item of news) {
-            if (
-              isWithinRange(item.publishedAt, startTime, endTime) &&
-              !urlSet.has(item.url)
-            ) {
+            if (isWithinRange(item.publishedAt, startTime, endTime) && !urlSet.has(item.url)) {
               allNews.push(item);
               urlSet.add(item.url);
             }
@@ -429,9 +427,7 @@ src/modules/news-collector/
           timeout: 30000,
         });
 
-        return response.data.items.map((item: any) =>
-          this.convertToNewsItem(item)
-        );
+        return response.data.items.map((item: any) => this.convertToNewsItem(item));
       } catch (error) {
         console.error(`네이버 API 호출 실패 [${keyword}]:`, error);
         return [];
@@ -505,12 +501,7 @@ src/modules/news-collector/
 
         // 네이버 뉴스 본문 셀렉터
         const content = await page.evaluate(() => {
-          const selectors = [
-            '#newsct_article',
-            '#articeBody',
-            '.article_body',
-            '#articleBodyContents',
-          ];
+          const selectors = ['#newsct_article', '#articeBody', '.article_body', '#articleBodyContents'];
 
           for (const selector of selectors) {
             const element = document.querySelector(selector);
@@ -737,15 +728,11 @@ src/modules/news-collector/
 
         // 6. 최소 개수 검증
         if (deduplicatedNews.length < this.minNewsCount) {
-          throw new Error(
-            `수집된 뉴스 부족: ${deduplicatedNews.length}개 (최소 ${this.minNewsCount}개 필요)`
-          );
+          throw new Error(`수집된 뉴스 부족: ${deduplicatedNews.length}개 (최소 ${this.minNewsCount}개 필요)`);
         }
 
         // 7. 최신순 정렬
-        deduplicatedNews.sort(
-          (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
-        );
+        deduplicatedNews.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
         console.log(`=== 뉴스 수집 완료: ${deduplicatedNews.length}개 (${duration}초) ===`);
@@ -791,10 +778,7 @@ src/modules/news-collector/
 
   export const logger = winston.createLogger({
     level: process.env.LOG_LEVEL || 'info',
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json()
-    ),
+    format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
     transports: [
       new winston.transports.Console({
         format: winston.format.simple(),
@@ -844,21 +828,9 @@ src/modules/news-collector/
     { name: '한국경제', url: 'https://www.hankyung.com/feed/economy' },
   ];
 
-  export const GOOGLE_NEWS_KEYWORDS = [
-    '한국경제',
-    '금융시장',
-    '주식시장',
-    '환율',
-    '부동산시장',
-  ];
+  export const GOOGLE_NEWS_KEYWORDS = ['한국경제', '금융시장', '주식시장', '환율', '부동산시장'];
 
-  export const NAVER_NEWS_KEYWORDS = [
-    '한국경제',
-    '금융시장',
-    '주식시장',
-    '환율',
-    '부동산',
-  ];
+  export const NAVER_NEWS_KEYWORDS = ['한국경제', '금융시장', '주식시장', '환율', '부동산'];
   ```
 
 ---
