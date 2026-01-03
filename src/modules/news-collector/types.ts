@@ -51,7 +51,7 @@ export type CollectionResult = z.infer<typeof CollectionResultSchema>;
 // =================================================================
 export const NewsSourceSchema = z.object({
   name: z.string().min(1), // 뉴스 소스 이름
-  type: z.enum(['RSS_FEED', 'GOOGLE_NEWS', 'WEB_CRAWL']), // 뉴스 소스 타입
+  type: z.enum(['RSS_FEED', 'GOOGLE_NEWS', 'NAVER']), // 뉴스 소스 타입
   url: z.string().min(1), // 뉴스 소스 URL
   enabled: z.boolean().default(true), // 뉴스 소스 활성화 여부
 });

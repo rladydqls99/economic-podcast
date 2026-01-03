@@ -1,7 +1,8 @@
 import { env } from '@/config/env.js';
 import Parser from 'rss-parser';
-import { CollectionResult, isValidNewsItem, NewsItem } from './types.js';
+
 import { isWithinRange } from '@/utils/date-time.js';
+import { CollectionResult, isValidNewsItem, NewsItem } from '../types.js';
 
 const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
 const SEARCH_KEYWORDS = ['한국경제', '금융시장', '주식시장', '환율', '부동산시장'];

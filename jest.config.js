@@ -32,8 +32,14 @@ export default {
   },
 
   // ===== 테스트 파일 찾기 =====
-  // tests 폴더 안의 *.test.ts 파일만 실행
-  testMatch: ['**/tests/**/*.test.ts'],
+  // 유닛 테스트: src/**/__test__/*.unit.test.ts
+  // 통합 테스트: src/**/__test__/*.integration.test.ts
+  // E2E 테스트: tests/e2e/**/*.test.ts
+  testMatch: [
+    '<rootDir>/src/**/__test__/*.unit.test.ts',
+    '<rootDir>/src/**/__test__/*.integration.test.ts',
+    '<rootDir>/tests/e2e/**/*.test.ts',
+  ],
 
   // ===== 기본 타임아웃 =====
   // 각 테스트가 10초 이상 걸리면 실패 (API 호출 테스트 대비)

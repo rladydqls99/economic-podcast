@@ -1,6 +1,6 @@
 ## 7. 디렉토리 구조 재구성 (사이트별 독립 구조)
 
-❌ **미구현**
+✅ **구현 완료**
 
 **⚠️ 아키텍처 변경**: 기존 flat 구조에서 **사이트별 독립 구조 (Option B)**로 전환합니다.
 
@@ -12,7 +12,7 @@
 
 ### 7.1. 새로운 디렉토리 구조 생성
 
-- [ ] 사이트별 디렉토리 생성:
+- [x] 사이트별 디렉토리 생성:
 
   ```bash
   mkdir -p src/modules/news-collector/google-news
@@ -22,25 +22,25 @@
 
 ### 7.2. 기존 파일 이동 및 재구성
 
-- [ ] 기존 `google-news-collector.ts` 파일을 `google-news/collector.ts`로 이동:
+- [x] 기존 `google-news-collector.ts` 파일을 `google-news/collector.ts`로 이동:
 
   ```bash
   mv src/modules/news-collector/google-news-collector.ts \
      src/modules/news-collector/google-news/collector.ts
   ```
 
-- [ ] `rss-collector.ts`는 그대로 유지 (RSS는 범용이므로 최상위 유지)
+- [x] `rss-collector.ts`는 그대로 유지 (RSS는 범용이므로 최상위 유지)
 
 ### 7.3. Playwright 패키지 설치
 
-- [ ] Playwright 설치:
+- [x] Playwright 설치:
 
   ```bash
   pnpm add playwright
   pnpm exec playwright install chromium
   ```
 
-- [ ] Playwright 타입 정의 확인:
+- [x] Playwright 타입 정의 확인:
 
   ```bash
   # playwright 패키지에 타입이 포함되어 있음

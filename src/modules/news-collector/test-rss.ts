@@ -1,5 +1,5 @@
 import { GoogleNewsCollector } from './google-news-collector.js';
-import { RSSCollector } from './rss-collector.js';
+import { RSSCollector } from './rss/collector.js';
 
 async function testRSSCollector() {
   console.log('🧪 RSS Collector 테스트 시작...\n');

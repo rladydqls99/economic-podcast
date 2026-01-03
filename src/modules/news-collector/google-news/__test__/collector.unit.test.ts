@@ -10,13 +10,13 @@ import { NewsItem } from '@/modules/news-collector/types.js';
 
 describe('모듈 내보내기 (Module exports)', () => {
   it('GoogleNewsCollector 클래스를 내보내야 함', async () => {
-    const module = await import('@/modules/news-collector/google-news-collector.js');
+    const module = await import('@/modules/news-collector/google-news/collector.js');
     expect(module.GoogleNewsCollector).toBeDefined();
     expect(typeof module.GoogleNewsCollector).toBe('function');
   });
 
   it('GoogleNewsCollector를 인스턴스화할 수 있어야 함', async () => {
-    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news-collector.js');
+    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
     expect(collector).toBeDefined();
     expect(collector.collectNews).toBeDefined();
@@ -26,7 +26,7 @@ describe('모듈 내보내기 (Module exports)', () => {
 
 describe('수집 결과 구조 (CollectionResult structure)', () => {
   it('collectNews 메서드가 올바른 반환 타입을 가져야 함', async () => {
-    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news-collector.js');
+    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
 
     const startTime = new Date('2025-01-15T00:00:00');
@@ -92,7 +92,7 @@ describe('FR-001-03: 필수 필드 검증 (Required fields validation)', () => {
 
 describe('FR-001-02: 다양한 뉴스 소스 지원 (Multiple news sources)', () => {
   it('Google News를 뉴스 소스로 지원해야 함', async () => {
-    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news-collector.js');
+    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
 
     // GoogleNewsCollector가 존재하고 인스턴스화 가능해야 함
@@ -102,7 +102,7 @@ describe('FR-001-02: 다양한 뉴스 소스 지원 (Multiple news sources)', ()
 
 describe('Google News 특화 기능 (Google News specific features)', () => {
   it('한국어 경제 키워드를 처리할 수 있어야 함', async () => {
-    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news-collector.js');
+    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
 
     // 암묵적 키워드 처리와 함께 collector가 인스턴스화 가능한지 검증
@@ -125,7 +125,7 @@ describe('Google News 특화 기능 (Google News specific features)', () => {
 
 describe('URL 중복 제거 기능 (URL deduplication feature)', () => {
   it('수집 결과가 중복 제거 개수를 추적할 수 있어야 함', async () => {
-    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news-collector.js');
+    const { GoogleNewsCollector } = await import('@/modules/news-collector/google-news/collector.js');
     const collector = new GoogleNewsCollector();
 
     const startTime = new Date('2025-01-15T00:00:00');

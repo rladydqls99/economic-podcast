@@ -1,6 +1,6 @@
 import { env } from '@/config/env.js';
 import Parser from 'rss-parser';
-import { CollectionResult, isValidNewsItem, NewsItem } from './types.js';
+import { CollectionResult, isValidNewsItem, NewsItem } from '../types.js';
 import { isWithinRange } from '@/utils/date-time.js';
 
 const RSS_FEEDS = [

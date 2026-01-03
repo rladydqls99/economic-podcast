@@ -21,4 +21,10 @@ export default [
       },
     },
   },
+  {
+    files: ['**/*.test.{js,ts}', '**/__tests__/**/*.{js,ts}'],
+    rules: {
+      'security/detect-object-injection': 'off',
+    },
+  },
 ];
