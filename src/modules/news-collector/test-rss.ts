@@ -1,4 +1,4 @@
-import { GoogleNewsCollector } from './google-news-collector.js';
+import { GoogleNewsCollector } from './google-news/collector.js';
 import { RSSCollector } from './rss/collector.js';
 
 async function testRSSCollector() {

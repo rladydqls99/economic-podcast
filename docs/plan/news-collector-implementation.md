@@ -77,9 +77,9 @@ src/modules/news-collector/
 
 ### 8.1. Playwright Manager 구현 (FR-001-04)
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/shared/playwright-manager.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/shared/playwright-manager.ts` 파일 생성
 
-- [ ] Playwright Manager 클래스 구현:
+- [x] Playwright Manager 클래스 구현:
 
   ```typescript
   import { chromium, Browser, BrowserContext, Page } from 'playwright';
@@ -147,9 +147,9 @@ src/modules/news-collector/
 
 ### 8.2. Cheerio Utilities 구현
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/shared/cheerio-utils.ts` 파일 생성
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/shared/cheerio-utils.ts` 파일 생성
 
-- [ ] 공통 파싱 유틸리티 함수 구현:
+- [x] 공통 파싱 유틸리티 함수 구현:
 
   ```typescript
   import * as cheerio from 'cheerio';
@@ -199,12 +199,12 @@ src/modules/news-collector/
 
 ### 8.3. Shared Utilities 테스트
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/shared/playwright-manager.test.ts` 생성
-- [ ] Playwright Manager 초기화 테스트
-- [ ] 브라우저 재사용 테스트
-- [ ] 동시 탭 제한 테스트
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/tests/unit/news-collector/shared/cheerio-utils.test.ts` 생성
-- [ ] HTML 파싱 유틸리티 테스트
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/shared/__test__/playwright-manager.unit.test.ts` 생성
+- [x] Playwright Manager 초기화 테스트
+- [x] 브라우저 재사용 테스트
+- [x] 동시 탭 제한 테스트
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/shared/__test__/cheerio-utils.unit.test.ts` 생성
+- [x] HTML 파싱 유틸리티 테스트
 
 ---
 
