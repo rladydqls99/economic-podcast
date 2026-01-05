@@ -2,6 +2,7 @@ import { playwrightManager } from '../shared/playwright-manager.js';
 import { cleanHtml, extractArticleContent } from '../shared/cheerio-utils.js';
 import { NewsItem } from '../types.js';
 import { chatJSON } from '@/utils/gemini.js';
+import { NOISE_PATTERNS } from '@/config/noise_patterns.js';
 
 /**
  * Google News 링크의 실제 기사 본문 추출
@@ -153,21 +154,6 @@ export class GoogleNewsExtractor {
     // 1. 문장 단위로 분리 (개행 기준)
     const lines = content.split('\n').map((line) => line.trim());
 
-    // 2. 노이즈 패턴 정의
-    const noisePatterns = [
-      /^(광고|AD|ADVERTISEMENT)/i,
-      /^(구독|Subscribe|좋아요|Like)/i,
-      /유료.*회원|프리미엄.*전용|members only/i,
-      /^(기자|특파원|논설위원).*:/,
-      /^(사진|그래픽|이미지).*:/,
-      /저작권|Copyright|All Rights Reserved/i,
-      /무단.*전재.*배포.*금지/,
-      /^(관련기사|추천기사|이 기사)/,
-      /^(앵커|진행자|MC).*:/,
-      /^[\w\-_.]+@[\w\-_.]+/, // 이메일 주소
-      /^\d{2,4}[-./]\d{1,2}[-./]\d{1,2}/, // 날짜만 있는 줄
-    ];
-
     // 3. 의미있는 문장만 필터링
     const meaningfulLines: string[] = [];
     let foundStart = false;
@@ -177,7 +163,7 @@ export class GoogleNewsExtractor {
       if (!line || line.length < 10) continue;
 
       // 노이즈 패턴 매칭 시 스킵
-      if (noisePatterns.some((pattern) => pattern.test(line))) continue;
+      if (NOISE_PATTERNS.some((pattern) => pattern.pattern.test(line))) continue;
 
       // 첫 의미있는 문장 발견
       if (!foundStart && line.length >= 30) {
@@ -282,6 +268,10 @@ export class GoogleNewsExtractor {
 - 전문가만 아는 금융 상품
 - 한국 영향 제로
 
+### 주가와 관계없는 기업 제품 소식
+- 아이오닉, 제네시스 할인
+- 현대차, 티볼리 할인
+
 ## 💎 꿀팁: 이런 뉴스는 무조건 선택
 
 1. **내 지갑 충격탄**
@@ -301,6 +291,12 @@ export class GoogleNewsExtractor {
 
 4. **금지된 진실**
    - "은행들이 숨기는 예금 꿀팁"
+   - "부자들만 아는 절세 방법"
+   - "정부 발표와 다른 실제 상황"
+
+5. **저축, 투자, 재산 관리**
+   - 새로움 저축 및 투자 상품 소식 
+   - "은행이 숨기는 예금 꿀팁"
    - "부자들만 아는 절세 방법"
    - "정부 발표와 다른 실제 상황"
 

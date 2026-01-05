@@ -3,53 +3,9 @@ import Parser from 'rss-parser';
 import { isWithinRange } from '@/utils/date-time.js';
 import { CollectionResult, isValidNewsItem, NewsItem } from '../types.js';
 import { chatJSON } from '@/utils/gemini.js';
+import { ALL_KEYWORDS } from '@/config/keywords.js';
 
 const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
-
-const SEARCH_KEYWORDS = [
-  // ===== Layer 1: 내 지갑 직접 타격 =====
-  // 환율 & 물가
-  '달러 환율', // '환율'보다 구체적
-  '엔저', // 일본 여행 관심↑
-  '물가', // '물가 상승'보다 중립적 (하락 뉴스도 포함)
-  '유류세',
-  '전기요금',
-
-  // 부동산 (한국인 최대 관심사)
-  '아파트값',
-  '청약',
-  '전세 사기',
-  '집값', // '매매가'보다 일상어
-  '재건축',
-
-  // 금융 & 투자
-  '예금금리', // '기준금리'보다 실생활 체감
-  '대출금리',
-  '코스피', // 유지 (주요 지표)
-  '삼성전자 주가', // 국민주
-  '비트코인', // MZ 관심↑
-
-  // ===== Layer 2: 회사 & 산업 트렌드 =====
-  '삼성전자',
-  '현대차',
-  'SK하이닉스',
-  '반도체',
-  '배터리',
-  'AI 반도체',
-  '엔비디아', // 테크 종사자 관심
-  '구조조정', // 직장인 불안감
-  '최저임금',
-  '주 4일제',
-
-  // ===== Layer 3: 글로벌 & 투자 인사이트 =====
-  '미국 금리', // 한국 경제 영향
-  '중국 경기',
-  '테슬라 주가',
-  '애플 실적',
-  '트럼프 관세', // 시의성 (2026)
-  '엔화 약세',
-  '금값', // 안전자산 트렌드
-];
 
 /**
  * Google News RSS 메타데이터 수집기
@@ -90,7 +46,7 @@ export class GoogleNewsCollector {
     const urlSet = new Set<string>();
     let duplicatesRemoved = 0;
 
-    for (const keyword of SEARCH_KEYWORDS) {
+    for (const keyword of ALL_KEYWORDS) {
       try {
         await this.delay(1000);
 
