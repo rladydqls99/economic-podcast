@@ -5,30 +5,50 @@ import { CollectionResult, isValidNewsItem, NewsItem } from '../types.js';
 import { chatJSON } from '@/utils/gemini.js';
 
 const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
+
 const SEARCH_KEYWORDS = [
-  '환율',
-  '고환율',
-  '금리 인상',
-  '기준금리',
-  '물가 상승',
-  '인플레이션',
-  '코스피',
-  '주식 폭락',
-  '투자자',
-  '외국인 매도',
-  'ETF',
-  '반도체 경기',
-  '부동산',
-  '매매가',
-  '전세',
-  '입주 가뭄',
-  '분양',
+  // ===== Layer 1: 내 지갑 직접 타격 =====
+  // 환율 & 물가
+  '달러 환율', // '환율'보다 구체적
+  '엔저', // 일본 여행 관심↑
+  '물가', // '물가 상승'보다 중립적 (하락 뉴스도 포함)
+  '유류세',
+  '전기요금',
+
+  // 부동산 (한국인 최대 관심사)
+  '아파트값',
   '청약',
-  'PF 부실',
-  '금융위기',
-  '유동성 위기',
-  '은행 부실',
-  '채권 시장',
+  '전세 사기',
+  '집값', // '매매가'보다 일상어
+  '재건축',
+
+  // 금융 & 투자
+  '예금금리', // '기준금리'보다 실생활 체감
+  '대출금리',
+  '코스피', // 유지 (주요 지표)
+  '삼성전자 주가', // 국민주
+  '비트코인', // MZ 관심↑
+
+  // ===== Layer 2: 회사 & 산업 트렌드 =====
+  '삼성전자',
+  '현대차',
+  'SK하이닉스',
+  '반도체',
+  '배터리',
+  'AI 반도체',
+  '엔비디아', // 테크 종사자 관심
+  '구조조정', // 직장인 불안감
+  '최저임금',
+  '주 4일제',
+
+  // ===== Layer 3: 글로벌 & 투자 인사이트 =====
+  '미국 금리', // 한국 경제 영향
+  '중국 경기',
+  '테슬라 주가',
+  '애플 실적',
+  '트럼프 관세', // 시의성 (2026)
+  '엔화 약세',
+  '금값', // 안전자산 트렌드
 ];
 
 /**
@@ -126,6 +146,7 @@ export class GoogleNewsCollector {
 
       for (const item of feed.items) {
         const newsItem = this.convertGoogleNewsItem(item);
+
         if (newsItem && isValidNewsItem(newsItem)) {
           newsItems.push(newsItem);
         }
@@ -162,15 +183,16 @@ export class GoogleNewsCollector {
   }
 
   /**
-   * AI를 활용하여 쇼츠용 뉴스 필터링
+   * AI를 활용하여 쇼츠용 뉴스 1차 필터링 (제목 기반)
    *
    * @param newsItems - 필터링할 뉴스 아이템 배열
-   * @returns 쇼츠에 적합한 뉴스 5개
+   * @returns 크롤링할 가치가 있는 뉴스 15개
    *
    * @description
-   * - 뉴스 제목을 기반으로 쇼츠 콘텐츠 적합성 평가
-   * - 한국인 시청자의 관심사와 클릭 유도 요소 분석
-   * - AI가 선별한 상위 5개 뉴스만 반환
+   * - 제목만으로 1차 스크리닝 (100개 → 15개)
+   * - 명백히 쇼츠 부적합한 뉴스 제외
+   * - 본문 확인이 필요한 후보군 선별
+   * - 여유있게 15개 선정 (최종 3개를 위한 안전 마진)
    */
   private async filterNewsForShorts(newsItems: NewsItem[]): Promise<NewsItem[]> {
     if (newsItems.length === 0) {
@@ -196,14 +218,15 @@ export class GoogleNewsCollector {
   }
 
   /**
-   * 쇼츠용 뉴스 필터링 프롬프트 생성
+   * 쇼츠용 뉴스 1차 필터링 프롬프트 생성 (제목 기반)
    */
   private buildFilteringPrompt(news: { id: number; title: string }[]): string {
     return `
 당신은 한국 경제 유튜브 쇼츠 전문 에디터입니다.
 
 ## 목표
-아래 뉴스 목록에서 **한국인 시청자가 쇼츠로 봤을 때 클릭하고 싶어지는** 주제 5개를 선별하세요.
+아래 뉴스 목록에서 **본문을 확인해볼 가치가 있는** 후보 15개를 선별하세요.
+(제목만으로 명백히 쇼츠 부적합한 뉴스만 제외)
 
 ## 선별 기준 (우선순위 순)
 

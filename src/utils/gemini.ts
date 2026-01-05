@@ -5,6 +5,10 @@ const gemini = new GoogleGenAI({
   apiKey: env.geminiApiKey,
 });
 
+const groundingTool = {
+  googleSearch: {},
+};
+
 /**
  * Gemini API 호출 옵션
  */
@@ -35,14 +39,15 @@ export interface GeminiChatOptions {
  *   maxTokens: 1000
  * });
  */
-export const chat = async (message: string, options?: GeminiChatOptions): Promise<string> => {
+export const chat = async (prompt: string, options?: GeminiChatOptions): Promise<string> => {
   try {
     const response = await gemini.models.generateContent({
       model: options?.model || 'gemini-3-flash-preview',
-      contents: message,
+      contents: prompt,
       config: {
         temperature: options?.temperature,
         maxOutputTokens: options?.maxTokens,
+        tools: [groundingTool],
       },
     });
 
@@ -92,6 +97,7 @@ export const chatJSON = async <T = unknown>(prompt: string, options?: GeminiChat
     });
 
     const text = response.text;
+
     if (!text) {
       throw new Error('Gemini API returned empty response');
     }

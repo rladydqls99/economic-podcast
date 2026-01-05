@@ -55,7 +55,7 @@ export class GoogleNewsService {
         errors.push(...(metadataResult.errors || []));
       }
 
-      const newsItems = metadataResult.newsItems.splice(0, 2);
+      const newsItems = metadataResult.newsItems;
       console.log(`[GoogleNewsService] 메타데이터 수집 완료: ${newsItems.length}개`);
 
       // Step 2: 본문 추출
