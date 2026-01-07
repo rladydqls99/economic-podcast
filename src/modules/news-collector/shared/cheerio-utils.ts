@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import { NOISE_PATTERNS } from '@/config/noise_patterns.js';
 
 /**
  * HTML에서 본문 텍스트 추출 (공통 패턴)
@@ -56,6 +57,100 @@ export function cleanHtml(html: string): string {
 export function extractMetaContent(html: string, property: string): string | null {
   const $ = cheerio.load(html);
   return $(`meta[property="${property}"]`).attr('content') || null;
+}
+
+/**
+ * 뉴스 본문에서 의미있는 내용만 추출 (노이즈 제거)
+ *
+ * @param content - 원본 본문 텍스트
+ * @param options - 추출 옵션
+ * @param options.maxLength - 최대 길이 (기본값: 800자)
+ * @param options.minLineLength - 의미있는 줄로 판단할 최소 길이 (기본값: 10자)
+ * @param options.startDetectionLength - 본문 시작으로 판단할 줄 길이 (기본값: 30자)
+ * @param options.preserveSentence - 문장 중간 자르기 방지 여부 (기본값: true)
+ * @returns 정제된 본문 텍스트
+ *
+ * @description
+ * 1. 광고성 문구, 구독 유도, 저작권 안내 등 노이즈 패턴 제거
+ * 2. 짧은 문장 건너뛰고 본문 시작 지점 탐지
+ * 3. 실제 뉴스 내용 위주로 추출
+ * 4. 지정된 길이로 자르되, 문장 중간에서 자르지 않음
+ *
+ * @example
+ * const raw = "광고\n\n오늘 삼성전자가 신제품을 발표했다...\n\n©저작권";
+ * const clean = extractMeaningfulContent(raw);
+ * // "오늘 삼성전자가 신제품을 발표했다..."
+ *
+ * @example
+ * // 옵션 사용
+ * const clean = extractMeaningfulContent(raw, {
+ *   maxLength: 500,
+ *   minLineLength: 20,
+ *   preserveSentence: false
+ * });
+ */
+export function extractMeaningfulContent(
+  content: string,
+  options: {
+    maxLength?: number;
+    minLineLength?: number;
+    startDetectionLength?: number;
+    preserveSentence?: boolean;
+  } = {}
+): string {
+  if (!content) return '';
+
+  const {
+    maxLength = 800,
+    minLineLength = 10,
+    startDetectionLength = 30,
+    preserveSentence = true,
+  } = options;
+
+  // 1. 문장 단위로 분리 (개행 기준)
+  const lines = content.split('\n').map((line) => line.trim());
+
+  // 2. 의미있는 문장만 필터링
+  const meaningfulLines: string[] = [];
+  let foundStart = false;
+
+  for (const line of lines) {
+    // 빈 줄 또는 너무 짧은 줄 스킵
+    if (!line || line.length < minLineLength) continue;
+
+    // 노이즈 패턴 매칭 시 스킵
+    if (NOISE_PATTERNS.some((pattern) => pattern.pattern.test(line))) continue;
+
+    // 첫 의미있는 문장 발견 (본문 시작 감지)
+    if (!foundStart && line.length >= startDetectionLength) {
+      foundStart = true;
+    }
+
+    if (foundStart) {
+      meaningfulLines.push(line);
+    }
+  }
+
+  // 3. 합치기
+  const cleaned = meaningfulLines.join(' ');
+
+  // 4. 최대 길이로 자르기
+  if (cleaned.length <= maxLength) {
+    return cleaned;
+  }
+
+  const truncated = cleaned.slice(0, maxLength);
+
+  // 5. 문장 중간 자르기 방지 (옵션)
+  if (!preserveSentence) {
+    return truncated;
+  }
+
+  // 마지막 마침표 찾기 (한글 종결어미 포함: 다, 요, .)
+  const lastPeriod = Math.max(truncated.lastIndexOf('.'), truncated.lastIndexOf('다'), truncated.lastIndexOf('요'));
+
+  // 절반 이상 지점에서 마침표 발견 시 그곳까지만 반환 (너무 짧게 잘리는 것 방지)
+  return lastPeriod > maxLength / 2 ? truncated.slice(0, lastPeriod + 1) : truncated;
 }
 
 /**
