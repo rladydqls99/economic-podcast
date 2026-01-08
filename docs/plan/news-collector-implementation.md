@@ -394,9 +394,9 @@ This phase implements the PRD's **2-stage Gemini filtering strategy** with 32 ke
         ${newsItems
           .map(
             (item, idx) => `
-    ${idx}. ${item.title}
-    본문: ${item.content?.substring(0, 800) || item.summary}
-  `
+  ${idx}. ${item.title}
+  본문: ${item.content?.substring(0, 800) || item.summary}
+`
           )
           .join('\n---\n')}
   
@@ -645,9 +645,9 @@ This phase implements the PRD's **2-stage Gemini filtering strategy** with 32 ke
 
 ##### 13.1. Main Collector 파이프라인 수정
 
-- [ ] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/index.ts` 수정
+- [x] `/Users/kim-yongbin/projects/economic-podcast/src/modules/news-collector/index.ts` 수정
 
-- [ ] 2단계 파이프라인 적용:
+- [x] 2단계 파이프라인 적용:
 
   ```typescript
   import { GoogleNewsCollector } from './google-news/collector.js';
@@ -729,13 +729,13 @@ This phase implements the PRD's **2-stage Gemini filtering strategy** with 32 ke
 
 ##### 13.2. 환경 변수 추가
 
-- [ ] `.env`에 Gemini API 키 추가:
+- [x] `.env`에 Gemini API 키 추가:
 
   ```
   GEMINI_API_KEY=your_api_key_here
   ```
 
-- [ ] `src/config/env.ts` 수정:
+- [x] `src/config/env.ts` 수정:
   ```typescript
   export const env = {
     // ... 기존 코드 ...

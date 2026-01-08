@@ -34,14 +34,14 @@
 
 ### 1.2. 용어 정의
 
-| 용어           | 정의                                          |
-| -------------- | --------------------------------------------- |
-| 쇼츠 (Shorts)  | YouTube의 세로형 짧은 동영상 형식 (최대 60초) |
-| HeyGen         | AI 기반 영상 생성 플랫폼                      |
-| LLM            | Large Language Model (대규모 언어 모델)       |
-| 이슈           | 반복적으로 언급되는 경제 뉴스 주제            |
-| 대본           | 팟캐스트에서 읽을 스크립트                    |
-| 폴링 (Polling) | 주기적으로 상태를 확인하는 방식               |
+| 용어           | 정의                                                   |
+| -------------- | ------------------------------------------------------ |
+| 쇼츠 (Shorts)  | YouTube의 세로형 짧은 동영상 형식 (최대 60초)          |
+| Veo3           | Google의 최신 텍스트-투-비디오 생성 AI 모델           |
+| LLM            | Large Language Model (대규모 언어 모델)                |
+| 이슈           | 반복적으로 언급되는 경제 뉴스 주제                     |
+| 대본           | 팟캐스트에서 읽을 스크립트                             |
+| 폴링 (Polling) | 주기적으로 상태를 확인하는 방식                        |
 
 ---
 
@@ -79,7 +79,7 @@
 #### 자동화 파이프라인
 - 매일 22:00 뉴스 수집 및 필터링 (60초 완료)
 - Gemini 기반 45초 바이럴 대본 생성
-- HeyGen 영상 제작 및 YouTube Shorts 업로드
+- Veo3 영상 제작 및 YouTube Shorts 업로드
 - 로그 및 에러 모니터링
 
 ### 3.2. 제외 범위 (Out-of-Scope)
@@ -112,7 +112,7 @@
 2. 시스템이 오늘(0시~22시) 한국 경제 뉴스를 수집
 3. LLM이 수집된 뉴스에서 2~4개 핵심 이슈를 추출
 4. LLM이 1분 분량 팟캐스트 대본을 생성
-5. HeyGen이 고정 캐릭터/배경으로 영상 제작
+5. Veo3가 대본을 기반으로 AI 영상 제작
 6. 시스템이 영상 생성 완료를 폴링으로 확인
 7. YouTube Data API를 통해 Shorts로 업로드
 8. 업로드 결과를 로그 파일에 기록
@@ -126,7 +126,7 @@
 
 - **뉴스 수집 실패:** 재시도 3회, 실패 시 관리자에게 알림 전송
 - **LLM API 실패:** 백업 프롬프트로 재시도
-- **HeyGen 생성 실패:** 에러 로그 기록 및 알림
+- **Veo3 생성 실패:** 에러 로그 기록 및 알림
 - **YouTube 업로드 실패:** OAuth 토큰 갱신 시도, 실패 시 알림
 
 ### 4.2. 보조 시나리오: 운영자 모니터링
@@ -199,13 +199,19 @@ Step 3: Gemini 본문 필터링 (3초)
 
 ---
 
-### 5.3. FR-003: HeyGen 영상 제작 모듈
+### 5.3. FR-003: Veo3 영상 제작 모듈
 
 **우선순위:** P0 (필수)
 
-**설명:** 생성된 대본을 HeyGen API로 영상 제작 (1080x1920 해상도, 60초 이하, 폴링 방식)
+**설명:** 생성된 대본을 Veo3 API로 AI 영상 제작 (1080x1920 해상도, 60초 이하)
 
-**기술적 의존성:** HeyGen API
+**기술적 세부사항:**
+- Google Vertex AI를 통한 Veo3 API 연동
+- 텍스트-투-비디오 생성 (프롬프트 기반)
+- 비동기 작업 처리 및 상태 확인
+- 생성된 영상 다운로드 및 로컬 저장
+
+**기술적 의존성:** Google Vertex AI (Veo3)
 
 ---
 
@@ -265,7 +271,7 @@ Step 3: Gemini 본문 필터링 (3초)
 **외부 API:**
 
 - Gemini API (Google)
-- HeyGen API
+- Veo3 via Google Vertex AI
 - YouTube Data API v3
 - Google News RSS
 
@@ -273,9 +279,9 @@ Step 3: Gemini 본문 필터링 (3초)
 
 ```
 GEMINI_API_KEY=
-HEYGEN_API_KEY=
-HEYGEN_CHARACTER_ID=
-HEYGEN_TEMPLATE_ID=
+GOOGLE_CLOUD_PROJECT_ID=
+GOOGLE_VERTEX_AI_LOCATION=
+GOOGLE_APPLICATION_CREDENTIALS=
 YOUTUBE_CLIENT_ID=
 YOUTUBE_CLIENT_SECRET=
 YOUTUBE_REFRESH_TOKEN=
@@ -315,7 +321,7 @@ NODE_ENV=production
 │       │                                             │            │
 │       │                                             ▼            │
 │       │                                      ┌──────────┐       │
-│       │                                      │ HeyGen   │       │
+│       │                                      │  Veo3    │       │
 │       │                                      │ 영상제작 │       │
 │       │                                      │  모듈    │       │
 │       │                                      └──────────┘       │
@@ -368,7 +374,7 @@ NODE_ENV=production
                           │
                           ▼
          ┌────────────────────────────────┐
-         │        HeyGen API              │
+         │  Veo3 via Vertex AI            │
          │       (영상 생성)              │
          └────────────────────────────────┘
                           │
@@ -421,7 +427,7 @@ economic-podcast/
 │   │   │   └── types.ts
 │   │   ├── video-generator/
 │   │   │   ├── index.ts
-│   │   │   ├── heygen-client.ts
+│   │   │   ├── veo3-client.ts
 │   │   │   └── types.ts
 │   │   ├── youtube-uploader/
 │   │   │   ├── index.ts
@@ -517,12 +523,11 @@ interface NewsItem {
 [대본 텍스트]
      │
      ▼
-[HeyGen API 요청]
+[Veo3 API 요청 (via Vertex AI)]
      │ (body: {
-     │   script: string,
-     │   characterId: string,
-     │   templateId: string,
-     │   resolution: "1080x1920"
+     │   prompt: string (대본 기반 비디오 프롬프트),
+     │   aspectRatio: "9:16" (세로형),
+     │   duration: "~60s"
      │ })
      │
      ▼
@@ -553,7 +558,7 @@ interface NewsItem {
 
 ```typescript
 interface VideoJob {
-  jobId: string; // HeyGen 작업 ID
+  jobId: string; // Veo3 작업 ID
   status: 'pending' | 'processing' | 'completed' | 'failed';
   videoUrl?: string; // 완성된 영상 URL
   localPath?: string; // 로컬 저장 경로
@@ -579,12 +584,12 @@ interface VideoJob {
 ```
 22:00:00  ─┐  뉴스 수집 & 필터링 (60초)
 22:01:00  ─┤  대본 생성 (3초, Gemini)
-22:01:03  ─┤  HeyGen 영상 제작 (7-8분)
-22:08:00  ─┤  YouTube 업로드 (1-2분)
-22:10:00  ─┘  완료
+22:01:03  ─┤  Veo3 영상 제작 (3-5분)
+22:05:00  ─┤  YouTube 업로드 (1-2분)
+22:07:00  ─┘  완료
 ```
 
-**예상 총 소요 시간:** 약 9-10분
+**예상 총 소요 시간:** 약 7분
 
 ---
 
@@ -592,13 +597,13 @@ interface VideoJob {
 
 ### 9.1. 성능 요구사항
 
-| 요구사항 ID | 설명                    | 목표      |
-| ----------- | ----------------------- | --------- |
+| 요구사항 ID | 설명                    | 목표     |
+| ----------- | ----------------------- | -------- |
 | NFR-PERF-01 | 뉴스 수집 & 필터링 시간 | 60초 이내 |
-| NFR-PERF-02 | 대본 생성 응답 시간     | 5초 이내  |
-| NFR-PERF-03 | HeyGen 영상 생성 시간   | 10분 이내 |
-| NFR-PERF-04 | YouTube 업로드 시간     | 3분 이내  |
-| NFR-PERF-05 | 전체 프로세스 완료 시간 | 15분 이내 |
+| NFR-PERF-02 | 대본 생성 응답 시간     | 5초 이내 |
+| NFR-PERF-03 | Veo3 영상 생성 시간     | 5분 이내 |
+| NFR-PERF-04 | YouTube 업로드 시간     | 3분 이내 |
+| NFR-PERF-05 | 전체 프로세스 완료 시간 | 10분 이내 |
 
 ### 9.2. 가용성 요구사항
 
@@ -649,13 +654,14 @@ interface VideoJob {
 #### 외부 API 제약
 
 - **Gemini API:** Rate limit 존재, 비용 발생
-- **HeyGen API:** 영상 생성 시간 제어 불가 (평균 7-10분)
+- **Veo3 API:** 영상 생성 시간 제어 불가 (평균 3-5분), Google Cloud 쿼터 제한
 - **YouTube API:** 일일 업로드 쿼터 제한 (10,000 units/day)
 
 #### 기술적 제약
 
-- 고정 캐릭터/배경은 HeyGen에서 사전 설정 필요
+- Veo3는 Google Cloud 프로젝트 및 Vertex AI 활성화 필요
 - OAuth 토큰은 주기적 갱신 필요
+- Veo3 프롬프트 품질이 영상 품질에 직접적 영향
 
 #### 콘텐츠 제약
 
@@ -679,9 +685,10 @@ interface VideoJob {
 
 #### 기술적 가정
 
-- HeyGen은 한국어 TTS를 지원함
+- Veo3는 한국어 프롬프트를 이해하고 적절한 영상 생성 가능
 - YouTube Shorts 알고리즘이 세로형 영상을 우대함
 - Gemini는 한국 경제 뉴스를 이해하고 분석 가능함
+- Veo3는 텍스트 기반 프롬프트로 경제 콘텐츠에 적합한 영상 생성 가능
 
 ---
 
@@ -718,13 +725,13 @@ interface VideoJob {
 
 ### 12.1. 개발 단계
 
-| 단계                             | 기간 | 주요 작업                                                           | 산출물                                      |
-| -------------------------------- | ---- | ------------------------------------------------------------------- | ------------------------------------------- |
-| **Phase 1: 설계 및 환경 구축**   | 1주  | - PRD 작성<br>- 기술 스택 선정<br>- 개발 환경 설정<br>- API 키 발급 | - PRD 문서<br>- 개발 환경<br>- .env.example |
-| **Phase 2: 코어 모듈 개발**      | 2주  | - 뉴스 수집 모듈<br>- 이슈 추출 모듈<br>- 대본 생성 모듈            | - 3개 코어 모듈<br>- 단위 테스트            |
-| **Phase 3: 영상 생성 및 업로드** | 2주  | - HeyGen 연동<br>- YouTube 업로드<br>- OAuth 구현                   | - 영상 생성 모듈<br>- 업로드 모듈           |
-| **Phase 4: 자동화 및 모니터링**  | 1주  | - 스케줄러 구현<br>- 로깅 시스템<br>- 에러 알림                     | - 완전 자동화 시스템<br>- 모니터링 대시보드 |
-| **Phase 5: 테스트 및 배포**      | 1주  | - 통합 테스트<br>- 실제 환경 테스트<br>- 배포                       | - 프로덕션 배포<br>- 운영 매뉴얼            |
+| 단계                             | 기간 | 주요 작업                                                                      | 산출물                                      |
+| -------------------------------- | ---- | ------------------------------------------------------------------------------ | ------------------------------------------- |
+| **Phase 1: 설계 및 환경 구축**   | 1주  | - PRD 작성<br>- 기술 스택 선정<br>- 개발 환경 설정<br>- API 키 발급            | - PRD 문서<br>- 개발 환경<br>- .env.example |
+| **Phase 2: 코어 모듈 개발**      | 2주  | - 뉴스 수집 모듈<br>- 이슈 추출 모듈<br>- 대본 생성 모듈                       | - 3개 코어 모듈<br>- 단위 테스트            |
+| **Phase 3: 영상 생성 및 업로드** | 2주  | - Veo3 연동 (Vertex AI)<br>- YouTube 업로드<br>- OAuth 구현                   | - 영상 생성 모듈<br>- 업로드 모듈           |
+| **Phase 4: 자동화 및 모니터링**  | 1주  | - 스케줄러 구현<br>- 로깅 시스템<br>- 에러 알림                                | - 완전 자동화 시스템<br>- 모니터링 대시보드 |
+| **Phase 5: 테스트 및 배포**      | 1주  | - 통합 테스트<br>- 실제 환경 테스트<br>- 배포                                  | - 프로덕션 배포<br>- 운영 매뉴얼            |
 
 **총 예상 기간:** 7주
 
@@ -735,7 +742,7 @@ interface VideoJob {
 | M1: 개발 환경 완료 | Week 1      | 모든 API 키 설정 완료         |
 | M2: 뉴스 수집 완료 | Week 2      | 20개 이상 뉴스 수집 성공      |
 | M3: AI 분석 완료   | Week 3      | 이슈 추출 + 대본 생성 성공    |
-| M4: 영상 생성 완료 | Week 5      | HeyGen 영상 1개 생성 성공     |
+| M4: 영상 생성 완료 | Week 5      | Veo3 영상 1개 생성 성공       |
 | M5: 첫 자동 업로드 | Week 6      | YouTube 쇼츠 자동 업로드 성공 |
 | M6: 7일 연속 성공  | Week 7      | 7일 연속 자동화 성공          |
 
@@ -817,22 +824,40 @@ interface VideoJob {
 - 행동 유도: 공유하고 싶게 만들기
 ```
 
-#### 14.1.2. HeyGen API 호출 예시
+#### 14.1.2. Veo3 API 호출 예시 (via Vertex AI)
 
 ```typescript
-// POST https://api.heygen.com/v1/video/generate
-{
-  "script": "대본 텍스트...",
-  "character_id": "고정_캐릭터_ID",
-  "template_id": "고정_템플릿_ID",
-  "resolution": "1080x1920",
-  "aspect_ratio": "9:16"
-}
+// Google Vertex AI - Veo3 API 호출
+import { VertexAI } from '@google-cloud/vertexai';
+
+const vertexAI = new VertexAI({
+  project: process.env.GOOGLE_CLOUD_PROJECT_ID,
+  location: process.env.GOOGLE_VERTEX_AI_LOCATION
+});
+
+// 영상 생성 요청
+const response = await vertexAI.preview.generateVideo({
+  model: 'veo-3',
+  prompt: '대본을 기반으로 한 비디오 생성 프롬프트...',
+  aspectRatio: '9:16',  // 세로형
+  duration: 60  // 초
+});
 
 // Response
 {
-  "job_id": "abc123",
-  "status": "pending"
+  "operationId": "abc123",
+  "status": "PENDING"
+}
+
+// 상태 확인
+const status = await vertexAI.preview.getOperation({
+  operationId: "abc123"
+});
+
+// 완료 시 Response
+{
+  "status": "COMPLETED",
+  "videoUrl": "gs://bucket-name/video.mp4"
 }
 ```
 
@@ -858,17 +883,18 @@ interface VideoJob {
 
 ### 14.2. 에러 코드 정의
 
-| 코드            | 설명                           | 복구 방법                |
-| --------------- | ------------------------------ | ------------------------ |
-| ERR_NEWS_001    | 뉴스 수집 실패                 | 재시도 3회               |
-| ERR_NEWS_002    | 수집된 뉴스 부족 (20개 미만)   | 소스 추가 또는 알림      |
-| ERR_LLM_001     | Gemini API 호출 실패           | 재시도 3회               |
-| ERR_LLM_002     | 응답 파싱 실패                 | 프롬프트 수정 필요       |
-| ERR_HEYGEN_001  | 영상 생성 요청 실패            | 재시도 2회               |
-| ERR_HEYGEN_002  | 영상 생성 타임아웃 (15분 초과) | 알림 전송                |
-| ERR_YOUTUBE_001 | OAuth 토큰 만료                | 자동 갱신 시도           |
-| ERR_YOUTUBE_002 | 업로드 실패                    | 재시도 2회               |
-| ERR_YOUTUBE_003 | 쿼터 초과                      | 알림 전송, 다음날 재시도 |
+| 코드           | 설명                          | 복구 방법                |
+| -------------- | ----------------------------- | ------------------------ |
+| ERR_NEWS_001   | 뉴스 수집 실패                | 재시도 3회               |
+| ERR_NEWS_002   | 수집된 뉴스 부족 (20개 미만)  | 소스 추가 또는 알림      |
+| ERR_LLM_001    | Gemini API 호출 실패          | 재시도 3회               |
+| ERR_LLM_002    | 응답 파싱 실패                | 프롬프트 수정 필요       |
+| ERR_VEO3_001   | 영상 생성 요청 실패           | 재시도 2회               |
+| ERR_VEO3_002   | 영상 생성 타임아웃 (10분 초과) | 알림 전송                |
+| ERR_VEO3_003   | Vertex AI 인증 실패           | 자격증명 확인            |
+| ERR_YOUTUBE_001 | OAuth 토큰 만료               | 자동 갱신 시도           |
+| ERR_YOUTUBE_002 | 업로드 실패                   | 재시도 2회               |
+| ERR_YOUTUBE_003 | 쿼터 초과                     | 알림 전송, 다음날 재시도 |
 
 ### 14.3. 로그 형식
 
@@ -876,10 +902,10 @@ interface VideoJob {
 [2025-12-17 22:00:00] [INFO] Daily job started
 [2025-12-17 22:01:00] [INFO] News filtering completed: 3 articles selected
 [2025-12-17 22:01:03] [INFO] Script generation completed (Gemini)
-[2025-12-17 22:01:05] [INFO] HeyGen job submitted: job_abc123
-[2025-12-17 22:08:00] [INFO] Video generation completed
-[2025-12-17 22:10:00] [INFO] YouTube upload completed: https://youtube.com/shorts/xyz789
-[2025-12-17 22:10:05] [INFO] Daily job completed successfully in 10m 5s
+[2025-12-17 22:01:05] [INFO] Veo3 job submitted: operation_abc123
+[2025-12-17 22:05:00] [INFO] Video generation completed
+[2025-12-17 22:07:00] [INFO] YouTube upload completed: https://youtube.com/shorts/xyz789
+[2025-12-17 22:07:05] [INFO] Daily job completed successfully in 7m 5s
 ```
 
 ### 14.4. 참고 자료
@@ -887,7 +913,7 @@ interface VideoJob {
 #### 공식 문서
 
 - [Gemini API Documentation](https://ai.google.dev/gemini-api/docs)
-- [HeyGen API Documentation](https://docs.heygen.com)
+- [Google Vertex AI - Veo3 Documentation](https://cloud.google.com/vertex-ai/docs)
 - [YouTube Data API v3](https://developers.google.com/youtube/v3)
 - [node-cron Documentation](https://www.npmjs.com/package/node-cron)
 
@@ -918,3 +944,4 @@ interface VideoJob {
 | ----- | ---------- | ------------ | ------------------------------------ |
 | 1.0.0 | 2025-12-17 | Product Team | 초안 작성                            |
 | 1.0.1 | 2025-12-17 | Product Team | 목차 번호 수정 및 불필요한 내용 삭제 |
+| 1.1.0 | 2026-01-08 | Product Team | HeyGen → Veo3 전환 (영상 생성 모듈 변경) |
