@@ -93,11 +93,7 @@ export class GoogleNewsExtractor {
       }
     }
 
-    // Step 2: 본문 기반 최종 필터링 (15개 → 3개)
-    // const finalNews = await this.finalFilterForShorts(results);
-    const finalNews = results.slice(0, 1);
-
-    return finalNews;
+    return results;
   }
 
   /**

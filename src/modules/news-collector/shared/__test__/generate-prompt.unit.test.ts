@@ -1,4 +1,7 @@
-import { 타이틀_기반_필터링_프롬프트, 콘텐츠_기반_필터링_프롬프트 } from '@/modules/news-collector/shared/generate-prompt.js';
+import {
+  타이틀_기반_필터링_프롬프트,
+  콘텐츠_기반_필터링_프롬프트,
+} from '@/modules/news-collector/shared/prompt-builder.js';
 
 describe('타이틀_기반_필터링_프롬프트', () => {
   // Normal cases
@@ -12,7 +15,7 @@ describe('타이틀_기반_필터링_프롬프트', () => {
     const prompt = 타이틀_기반_필터링_프롬프트(news);
 
     expect(prompt).toContain('한국 경제 유튜브 쇼츠 전문 에디터');
-    expect(prompt).toContain('15개를 선별하세요');
+    expect(prompt).toContain('30개를 선별하세요');
     expect(prompt).toContain(JSON.stringify(news));
   });
 
@@ -122,9 +125,7 @@ describe('타이틀_기반_필터링_프롬프트', () => {
   });
 
   it('매우 긴 제목을 처리해야 한다', () => {
-    const longTitle = '한국은행 금융통화위원회가 기준금리를 0.5%포인트 인상하기로 결정했습니다. '.repeat(
-      5
-    );
+    const longTitle = '한국은행 금융통화위원회가 기준금리를 0.5%포인트 인상하기로 결정했습니다. '.repeat(5);
     const news = [{ id: 1, title: longTitle }];
 
     const prompt = 타이틀_기반_필터링_프롬프트(news);
@@ -161,8 +162,11 @@ describe('콘텐츠_기반_필터링_프롬프트', () => {
     const prompt = 콘텐츠_기반_필터링_프롬프트(news);
 
     expect(prompt).toContain('25-40대 직장인');
-    expect(prompt).toContain('3초 안에 스크롤을 멈추게');
-    expect(prompt).toContain('뉴스 5개를 선별');
+    expect(prompt).toContain('잠들기 직전');
+    expect(prompt).toContain('2단계 미션');
+    expect(prompt).toContain('STEP 1');
+    expect(prompt).toContain('STEP 2');
+    expect(prompt).toContain('최대 5개까지');
     expect(prompt).toContain(JSON.stringify(news, null, 2));
   });
 
@@ -170,23 +174,28 @@ describe('콘텐츠_기반_필터링_프롬프트', () => {
     const news = [{ id: 1, title: '테스트' }];
     const prompt = 콘텐츠_기반_필터링_프롬프트(news);
 
-    // 1. 즉각 반응 유발
-    expect(prompt).toContain('The Hook Test');
-    expect(prompt).toContain('헐 진짜??');
-    expect(prompt).toContain('놀람');
+    // STEP 1: 가장 자극적인 주제 선정
+    expect(prompt).toContain('가장 자극적인 주제');
+    expect(prompt).toContain('3초 만에 깨울');
+    expect(prompt).toContain('침대에서 벌떡 일어나게');
+
+    // 감정 버튼
     expect(prompt).toContain('불안');
+    expect(prompt).toContain('놀람');
+    expect(prompt).toContain('분노');
 
-    // 2. 행동 유도
-    expect(prompt).toContain('Action Trigger');
-    expect(prompt).toContain('단톡방에 공유');
+    // 우선순위
+    expect(prompt).toContain('내 돈에 직접 영향');
+    expect(prompt).toContain('긴박한 시한');
+    expect(prompt).toContain('충격적 숫자');
 
-    // 3. 스토리 완결성
-    expect(prompt).toContain('45초 Rule');
-    expect(prompt).toContain('기승전결');
+    // STEP 2: 관련 뉴스 선별
+    expect(prompt).toContain('주제 관련성');
+    expect(prompt).toContain('각도 다양성');
+    expect(prompt).toContain('스토리 보완');
 
-    // 4. 바이럴 DNA
-    expect(prompt).toContain('Shareable Factor');
-    expect(prompt).toContain('찬반 논쟁');
+    // 45초 스토리
+    expect(prompt).toContain('45초');
   });
 
   it('제외 대상이 명시되어야 한다', () => {
@@ -194,22 +203,21 @@ describe('콘텐츠_기반_필터링_프롬프트', () => {
     const prompt = 콘텐츠_기반_필터링_프롬프트(news);
 
     expect(prompt).toContain('무조건 제외');
-    expect(prompt).toContain('뻔한 뉴스');
-    expect(prompt).toContain('낚시 제목');
-    expect(prompt).toContain('무관한 뉴스');
-    expect(prompt).toContain('주가와 관계없는 기업 제품 소식');
+    expect(prompt).toContain('뻔하고 지루한');
+    expect(prompt).toContain('제목만 자극적인 낚시');
+    expect(prompt).toContain('한국 무관');
+    expect(prompt).toContain('기업 마케팅성');
   });
 
-  it('꿀팁 섹션이 포함되어야 한다', () => {
+  it('우선 검토 주제가 포함되어야 한다', () => {
     const news = [{ id: 1, title: '테스트' }];
     const prompt = 콘텐츠_기반_필터링_프롬프트(news);
 
-    expect(prompt).toContain('꿀팁');
-    expect(prompt).toContain('내 지갑 충격탄');
-    expect(prompt).toContain('유명인/기업 반전');
+    expect(prompt).toContain('내 지갑 직격탄');
+    expect(prompt).toContain('일자리/고용 쇼크');
     expect(prompt).toContain('시한폭탄');
-    expect(prompt).toContain('금지된 진실');
-    expect(prompt).toContain('저축, 투자, 재산 관리');
+    expect(prompt).toContain('숨겨진 정보');
+    expect(prompt).toContain('유명 인물/기업 반전');
   });
 
   it('출력 형식과 개수 제한이 명시되어야 한다', () => {
@@ -217,8 +225,8 @@ describe('콘텐츠_기반_필터링_프롬프트', () => {
     const prompt = 콘텐츠_기반_필터링_프롬프트(news);
 
     expect(prompt).toContain('JSON 배열로만 응답');
-    expect(prompt).toContain('반드시 3개만 선별');
-    expect(prompt).toContain('2개도 안 되고 4개도 안 됨');
+    expect(prompt).toContain('반드시 1개 이상');
+    expect(prompt).toContain('최대 5개까지만');
     expect(prompt).toContain('"id": 숫자');
     expect(prompt).toContain('"title": "제목"');
   });
@@ -228,7 +236,8 @@ describe('콘텐츠_기반_필터링_프롬프트', () => {
     const news: { id: number; title: string; content?: string }[] = [];
     const prompt = 콘텐츠_기반_필터링_프롬프트(news);
 
-    expect(prompt).toContain('경제 콘텐츠 PD');
+    expect(prompt).toContain('밤 11시');
+    expect(prompt).toContain('PD');
     expect(prompt).toContain(JSON.stringify(news, null, 2));
   });
 
@@ -355,6 +364,45 @@ describe('콘텐츠_기반_필터링_프롬프트', () => {
     expect(typeof prompt).toBe('string');
     expect(prompt.length).toBeGreaterThan(0);
   });
+
+  // Test for new 2-step structure
+  it('2단계 구조가 명확히 구분되어야 한다', () => {
+    const news = [
+      { id: 1, title: '삼성전자 구조조정', content: '1만명 감원' },
+      { id: 2, title: '환율 급등', content: '1,400원 돌파' },
+    ];
+
+    const prompt = 콘텐츠_기반_필터링_프롬프트(news);
+
+    // STEP 1 검증
+    expect(prompt).toContain('STEP 1');
+    expect(prompt).toContain('가장 자극적인 주제 **하나**');
+    expect(prompt).toContain('자극적인 주제 선정 기준');
+
+    // STEP 2 검증
+    expect(prompt).toContain('STEP 2');
+    expect(prompt).toContain('선정된 주제 관련 뉴스');
+    expect(prompt).toContain('최대 5개까지');
+  });
+
+  it('잠들기 직전 페르소나가 명확해야 한다', () => {
+    const news = [{ id: 1, title: '테스트' }];
+    const prompt = 콘텐츠_기반_필터링_프롬프트(news);
+
+    expect(prompt).toContain('밤 11시');
+    expect(prompt).toContain('침대에 누워');
+    expect(prompt).toContain('잠들기 직전');
+    expect(prompt).toContain('피곤한 뇌');
+  });
+
+  it('출력 개수 제약이 1개 이상 5개 이하로 명시되어야 한다', () => {
+    const news = [{ id: 1, title: '테스트' }];
+    const prompt = 콘텐츠_기반_필터링_프롬프트(news);
+
+    expect(prompt).toContain('반드시 1개 이상 반환');
+    expect(prompt).toContain('최대 5개까지만 반환');
+    expect(prompt).toContain('선정된 주제와 관련 없는 뉴스는 절대 포함 금지');
+  });
 });
 
 describe('프롬프트 통합 시나리오', () => {
@@ -368,7 +416,7 @@ describe('프롬프트 통합 시나리오', () => {
     ];
 
     const titlePrompt = 타이틀_기반_필터링_프롬프트(initialNews);
-    expect(titlePrompt).toContain('15개를 선별');
+    expect(titlePrompt).toContain('30개를 선별');
 
     // 2단계: 콘텐츠 기반 필터링 (타이틀 필터링 통과한 것들)
     const filteredNews = [
@@ -378,7 +426,9 @@ describe('프롬프트 통합 시나리오', () => {
     ];
 
     const contentPrompt = 콘텐츠_기반_필터링_프롬프트(filteredNews);
-    expect(contentPrompt).toContain('5개를 선별');
+    expect(contentPrompt).toContain('2단계 미션');
+    expect(contentPrompt).toContain('STEP 1');
+    expect(contentPrompt).toContain('STEP 2');
   });
 
   it('두 프롬프트가 다른 목적과 기준을 가져야 한다', () => {
@@ -387,15 +437,16 @@ describe('프롬프트 통합 시나리오', () => {
     const titlePrompt = 타이틀_기반_필터링_프롬프트(news);
     const contentPrompt = 콘텐츠_기반_필터링_프롬프트(news);
 
-    // 타이틀 프롬프트: 15개 선별
-    expect(titlePrompt).toContain('15개');
-    expect(titlePrompt).not.toContain('3초');
-    expect(titlePrompt).not.toContain('45초');
+    // 타이틀 프롬프트: 30개 선별 (넓은 필터링)
+    expect(titlePrompt).toContain('30개');
+    expect(titlePrompt).not.toContain('2단계 미션');
+    expect(titlePrompt).not.toContain('침대');
 
-    // 콘텐츠 프롬프트: 5개 선별, 더 세밀한 기준
-    expect(contentPrompt).toContain('5개');
+    // 콘텐츠 프롬프트: 최대 5개 선별, 더 세밀한 기준
+    expect(contentPrompt).toContain('2단계 미션');
     expect(contentPrompt).toContain('3초');
     expect(contentPrompt).toContain('45초');
+    expect(contentPrompt).toContain('최대 5개');
   });
 
   it('실제 경제 뉴스 데이터로 프롬프트를 생성해야 한다', () => {

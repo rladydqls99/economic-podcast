@@ -1,9 +1,7 @@
 import { chatJSON } from '@/utils/gemini.js';
-import { CollectionResult, NewsItem } from '../types.js';
-import { GoogleNewsCollector } from './collector.js';
-import { GoogleNewsExtractor } from './extractor.js';
-import { extractMeaningfulContent } from '../shared/cheerio-utils.js';
-import { 콘텐츠_기반_필터링_프롬프트, 타이틀_기반_필터링_프롬프트 } from '../shared/generate-prompt.js';
+import { CollectionResult, NewsItem } from './types.js';
+import { GoogleNewsCollector, GoogleNewsExtractor } from './google-news/index.js';
+import { extractMeaningfulContent, 콘텐츠_기반_필터링_프롬프트, 타이틀_기반_필터링_프롬프트 } from './shared/index.js';
 
 /**
  * Google News 수집 서비스
@@ -78,6 +76,8 @@ export class GoogleNewsService {
       const endTimestamp = Date.now();
       const duration = ((endTimestamp - startTimestamp) / 1000).toFixed(2);
       console.log(`[GoogleNewsService] 전체 처리 완료 (소요시간: ${duration}초)`);
+
+      console.log(finalFilteredNewsItems);
 
       return {
         success: finalFilteredNewsItems.length > 0,
@@ -167,3 +167,13 @@ export class GoogleNewsService {
     return service;
   }
 }
+
+//npx tsx src/modules/news-collector/index.ts
+
+const googleNewsService = new GoogleNewsService();
+
+const before = new Date();
+before.setDate(before.getDate() - 1);
+const after = new Date();
+
+googleNewsService.collectNews(before, after);
