@@ -441,9 +441,9 @@ ${newsContext}
 
 #### Task 3.1: ScriptGenerator 클래스 생성
 
-- [ ] `generator.ts` 파일 작성
-- [ ] 생성자 구현 (Gemini API 키 인자)
-- [ ] `generateScript(newsItems: NewsItem[]): Promise<ScriptResult>` 메서드 추가
+- [x] `generator.ts` 파일 작성 (index.ts에 구현)
+- [x] 생성자 구현 (Gemini API 키 인자)
+- [x] `generateScript(newsItems: NewsItem[]): Promise<ScriptResult>` 메서드 추가
 
 **Implementation Pattern**:
 
@@ -508,17 +508,17 @@ export class ScriptGenerator {
 
 #### Task 3.2: Gemini API 통합
 
-- [ ] `@/utils/gemini.js`에서 `chatJSON` import
-- [ ] Gemini API 호출 설정:
+- [x] `@/utils/gemini.js`에서 `chatJSON` import
+- [x] Gemini API 호출 설정:
   - Model: `gemini-3-flash-preview` (기본값)
   - Temperature: 0.7 (창의적이지만 일관성 유지)
   - MaxTokens: 500 (45초 스크립트 충분)
   - Timeout: 5000ms (NFR-PERF-02)
-- [ ] 에러 핸들링:
+- [x] 에러 핸들링:
   - try-catch로 API 오류 처리
   - 타임아웃 오류 별도 처리
   - 응답 파싱 오류 처리
-- [ ] 재시도 로직 추가:
+- [x] 재시도 로직 추가:
   - 최대 2회 재시도
   - Exponential backoff (1초, 2초)
 
@@ -565,14 +565,14 @@ private sleep(ms: number): Promise<void> {
 
 #### Task 3.3: Gemini 응답 파싱
 
-- [ ] 4단계 구조 추출:
+- [x] 4단계 구조 추출:
   - `hook`, `problem`, `impact`, `conclusion` 필드 파싱
   - JSON 형식 검증
-- [ ] 메타데이터 계산:
+- [x] 메타데이터 계산:
   - `characterCount`: 전체 스크립트 길이
   - `estimatedDuration`: 캐릭터 수 기반 예상 시간 (4-5 chars/sec)
   - `processingTime`: API 호출 소요 시간
-- [ ] 잘못된 응답 처리:
+- [x] 잘못된 응답 처리:
   - JSON 파싱 실패 시 fallback (원본 텍스트 반환)
   - 누락된 섹션 처리 (빈 문자열로 채우기)
 
@@ -612,10 +612,10 @@ private combineSections(sections: ScriptSections): string {
 
 #### Task 3.4: 로깅 추가
 
-- [ ] 요청 타이밍 로깅 (시작, 종료, 소요 시간)
-- [ ] 뉴스 개수 및 제목 로깅
-- [ ] 캐릭터 수 및 예상 시간 로깅
-- [ ] 검증 결과 로깅
+- [x] 요청 타이밍 로깅 (시작, 종료, 소요 시간)
+- [x] 뉴스 개수 및 제목 로깅
+- [x] 캐릭터 수 및 예상 시간 로깅
+- [x] 검증 결과 로깅
 
 **Logging Example**:
 
@@ -631,8 +631,8 @@ console.log(`[ScriptGenerator] 검증 점수: ${validation.score}/100`);
 
 #### Task 3.5: Generator 테스트 작성
 
-- [ ] `__test__/generator.unit.test.ts` 생성
-- [ ] 테스트 시나리오:
+- [x] `__test__/generator.unit.test.ts` 생성
+- [x] 테스트 시나리오:
   - 유효한 3-5개 뉴스 아이템으로 스크립트 생성
   - API 타임아웃 테스트 (mock 느린 응답)
   - API 실패 테스트 (mock 에러 응답)
