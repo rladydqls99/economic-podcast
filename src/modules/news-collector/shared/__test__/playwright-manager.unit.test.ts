@@ -10,6 +10,14 @@ describe('PlaywrightManager', () => {
   afterEach(async () => {
     // Cleanup: 각 테스트 후 브라우저 닫기
     await manager.close();
+    // 브라우저 프로세스가 완전히 종료될 때까지 대기
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  });
+
+  // 모든 테스트 완료 후 최종 정리
+  afterAll(async () => {
+    // 혹시 남아있을 브라우저 프로세스 정리
+    await manager.close();
   });
 
   describe('initialize', () => {
