@@ -131,11 +131,7 @@ export class ScriptGenerator {
       try {
         console.log(`[ScriptGenerator] Gemini API 호출 (시도 ${attempt + 1}/${maxRetries + 1})`);
 
-        const response = await chatJSON<ScriptSections>(prompt, {
-          model: 'gemini-3-flash-preview',
-          temperature: this.config.temperature,
-          maxTokens: this.config.maxTokens,
-        });
+        const response = await chatJSON<ScriptSections>(prompt);
 
         console.log(`[ScriptGenerator] Gemini API 호출 성공`);
         return response;

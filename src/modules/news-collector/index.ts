@@ -77,8 +77,6 @@ export class GoogleNewsService {
       const duration = ((endTimestamp - startTimestamp) / 1000).toFixed(2);
       console.log(`[GoogleNewsService] 전체 처리 완료 (소요시간: ${duration}초)`);
 
-      console.log(finalFilteredNewsItems);
-
       return {
         success: finalFilteredNewsItems.length > 0,
         newsItems: finalFilteredNewsItems,
@@ -167,13 +165,3 @@ export class GoogleNewsService {
     return service;
   }
 }
-
-//npx tsx src/modules/news-collector/index.ts
-
-const googleNewsService = new GoogleNewsService();
-
-const before = new Date();
-before.setDate(before.getDate() - 1);
-const after = new Date();
-
-googleNewsService.collectNews(before, after);

@@ -688,8 +688,8 @@ describe('ScriptGenerator', () => {
 
 #### Task 4.1: Validator 클래스 생성
 
-- [ ] `validator.ts` 파일 작성
-- [ ] `validateScript(scriptResult: ScriptResult): ValidationResult` 메서드 추가
+- [x] `validator.ts` 파일 작성
+- [x] `validateScript(scriptResult: ScriptResult): ValidationResult` 메서드 추가
 
 **Implementation Pattern**:
 
@@ -726,15 +726,15 @@ export class ScriptValidator {
 
 #### Task 4.2: 구조 검증 구현
 
-- [ ] 4개 섹션 존재 확인:
+- [x] 4개 섹션 존재 확인:
   - `hook`, `problem`, `impact`, `conclusion` 모두 필수
   - 빈 문자열 체크
-- [ ] 섹션별 길이 검증:
+- [x] 섹션별 길이 검증:
   - Hook: 10-30자 (권장)
   - 문제: 50-100자 (권장)
   - 영향: 100-150자 (권장)
   - 결론: 20-50자 (권장)
-- [ ] 전체 길이 검증:
+- [x] 전체 길이 검증:
   - 최소: 180자
   - 최대: 270자
   - 권장: 200-250자
@@ -789,11 +789,11 @@ private checkStructure(sections: ScriptSections): StructureCheck {
 
 #### Task 4.3: 품질 검증 구현
 
-- [ ] Hook 효과성 검증:
+- [x] Hook 효과성 검증:
   - 숫자 포함 확인 (`/\d+/`)
   - 감정 트리거 확인 (`급락`, `위험`, `기회` 등)
   - 직접 호명 확인 (`당신의`, `내 지갑` 등)
-- [ ] CTA 존재 확인:
+- [x] CTA 존재 확인:
   - 행동 동사 확인 (`확인하세요`, `준비하세요`, `얘기해보세요`)
   - 긴급성 표현 확인 (`지금`, `내일`, `즉시`)
 
@@ -864,14 +864,14 @@ private checkCTA(conclusion: string): {
 
 #### Task 4.4: 품질 점수 계산
 
-- [ ] 점수 계산 알고리즘 구현 (0-100):
+- [x] 점수 계산 알고리즘 구현 (0-100):
   - 구조 완결성: 30점 (각 섹션 존재 여부)
   - 길이 정확성: 20점 (180-270자 범위)
   - Hook 품질: 25점 (숫자, 감정, 직접 호명)
   - 영향 관련성: 15점 (개인 관련성 표현)
   - CTA 강도: 10점 (행동 동사, 긴급성)
-- [ ] 낮은 점수에 대한 경고 추가 (< 70)
-- [ ] 심각한 문제에 대한 에러 추가 (< 50)
+- [x] 낮은 점수에 대한 경고 추가 (< 70)
+- [x] 심각한 문제에 대한 에러 추가 (< 50)
 
 **Implementation**:
 
@@ -899,8 +899,8 @@ private calculateScore(structureCheck: StructureCheck, qualityCheck: QualityChec
 
 #### Task 4.5: Validator 테스트 작성
 
-- [ ] `__test__/validator.unit.test.ts` 생성
-- [ ] 테스트 시나리오:
+- [x] `__test__/validator.unit.test.ts` 생성
+- [x] 테스트 시나리오:
   - 유효한 스크립트 (모든 섹션, 좋은 품질)
   - 누락된 섹션 (hook, problem 등)
   - 너무 짧은 스크립트 (< 150자)

@@ -6,7 +6,7 @@ import z from 'zod';
 export const NewsItemSchema = z.object({
   title: z.string().min(1), // 뉴스 제목 (필수)
   summary: z.string().min(1), // 요약/리드 (필수)
-  url: z.url(), // 원문 링크 (필수)
+  url: z.string().url(), // 원문 링크 (필수)
   publishedAt: z.date(), // 발행 시간 (필수)
   source: z.string().min(1), // 언론사명 (필수)
   category: z.string().optional(), // 카테고리 (선택)

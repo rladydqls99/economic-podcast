@@ -316,6 +316,7 @@ export class PromptBuilder {
       case 'CONVERSATIONAL':
         return CONVERSATIONAL_TONE_TEMPLATE;
       case 'URGENT':
+        return URGENT_TONE_TEMPLATE;
       default:
         return URGENT_TONE_TEMPLATE;
     }
