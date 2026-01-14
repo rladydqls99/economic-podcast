@@ -12,6 +12,16 @@ import { NewsItem } from '@/modules/news-collector/types.js';
 import { PromptBuilder } from './prompt-builder.js';
 import { ScriptValidator } from './validator.js';
 import { ScriptResult, ScriptSections, ScriptGeneratorConfig, ScriptMetadata } from './types.js';
+import { SCRIPT_GENERATOR_DEFAULTS, DURATION, NEWS_REQUIREMENTS } from '@/config/constants/script-generation.js';
+import { RETRY_CONFIG } from '@/config/constants/timeouts.js';
+import z from 'zod';
+
+const responseSchema = z.object({
+  hook: z.string().describe('첫 3초 문장 (충격적 사실, 긴급성 강조)'),
+  problem: z.string().describe('문제 설명 (배경, 맥락, 쉬운 용어, 2-3문장)'),
+  impact: z.string().describe('개인 영향 (내 지갑 관련성, 구체적 숫자, 3-4문장)'),
+  conclusion: z.string().describe('결론 및 CTA (즉각적 행동 유도)'),
+});
 
 /**
  * ScriptGenerator
@@ -33,9 +43,9 @@ export class ScriptGenerator {
 
   constructor(config?: Partial<ScriptGeneratorConfig>) {
     this.config = {
-      temperature: config?.temperature ?? 0.7,
-      maxTokens: config?.maxTokens ?? 500,
-      timeout: config?.timeout ?? 5000,
+      temperature: config?.temperature ?? SCRIPT_GENERATOR_DEFAULTS.TEMPERATURE,
+      maxTokens: config?.maxTokens ?? SCRIPT_GENERATOR_DEFAULTS.MAX_TOKENS,
+      timeout: config?.timeout ?? SCRIPT_GENERATOR_DEFAULTS.TIMEOUT,
     };
     this.promptBuilder = new PromptBuilder(this.config);
     this.validator = new ScriptValidator();
@@ -107,8 +117,10 @@ export class ScriptGenerator {
    * @private
    */
   private validateInput(newsItems: NewsItem[]): void {
-    if (newsItems.length < 3 || newsItems.length > 5) {
-      throw new Error(`Invalid news count: ${newsItems.length} (expected 3-5)`);
+    if (newsItems.length < NEWS_REQUIREMENTS.MIN_ITEMS || newsItems.length > NEWS_REQUIREMENTS.MAX_ITEMS) {
+      throw new Error(
+        `Invalid news count: ${newsItems.length} (expected ${NEWS_REQUIREMENTS.MIN_ITEMS}-${NEWS_REQUIREMENTS.MAX_ITEMS})`
+      );
     }
   }
 
@@ -124,14 +136,14 @@ export class ScriptGenerator {
    * @private
    */
   private async callGeminiAPI(prompt: string): Promise<ScriptSections> {
-    const maxRetries = 2;
+    const maxRetries = RETRY_CONFIG.MAX_RETRIES;
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         console.log(`[ScriptGenerator] Gemini API 호출 (시도 ${attempt + 1}/${maxRetries + 1})`);
 
-        const response = await chatJSON<ScriptSections>(prompt);
+        const response = await chatJSON<ScriptSections>(prompt, { responseJsonSchema: responseSchema });
 
         console.log(`[ScriptGenerator] Gemini API 호출 성공`);
         return response;
@@ -140,7 +152,7 @@ export class ScriptGenerator {
         console.error(`[ScriptGenerator] Gemini API 호출 실패 (시도 ${attempt + 1}):`, error);
 
         if (attempt < maxRetries) {
-          const backoffTime = Math.pow(2, attempt) * 1000; // 1s, 2s
+          const backoffTime = Math.pow(RETRY_CONFIG.BACKOFF_MULTIPLIER, attempt) * RETRY_CONFIG.BASE_DELAY_MS;
           console.log(`[ScriptGenerator] ${backoffTime}ms 후 재시도...`);
           await this.sleep(backoffTime);
         }
@@ -164,7 +176,7 @@ export class ScriptGenerator {
   private calculateMetadata(sections: ScriptSections, newsCount: number, startTime: number): ScriptMetadata {
     const script = this.combineSections(sections);
     const characterCount = script.length;
-    const estimatedDuration = Math.round(characterCount / 4.5); // 4.5 chars/sec (Korean)
+    const estimatedDuration = Math.round(characterCount / DURATION.CHARS_PER_SECOND_KOREAN);
     const processingTime = Date.now() - startTime;
 
     return {

@@ -9,7 +9,7 @@
  * Step 4: 최종 필터링 (AI)
  */
 
-import { GoogleNewsService } from '@/modules/news-collector/google-news/service.js';
+import { GoogleNewsService } from '@/modules/news-collector/index.js';
 import { getTodayNewsRange } from '@/utils/date-time.js';
 
 describe('Pipeline Integration (파이프라인 통합)', () => {

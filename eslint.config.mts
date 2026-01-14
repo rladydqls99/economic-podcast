@@ -10,7 +10,7 @@ export default [
   securitylint.configs.recommended,
   prettierConfig,
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ['src/**/*.{js,mjs,cjs,ts,mts,cts}'],
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -22,7 +22,7 @@ export default [
     },
   },
   {
-    files: ['**/*.test.{js,ts}', '**/__tests__/**/*.{js,ts}'],
+    files: ['src/**/*.test.{js,ts}', 'src/**/__tests__/**/*.{js,ts}'],
     rules: {
       'security/detect-object-injection': 'off',
     },

@@ -8,6 +8,10 @@
  */
 
 import { ScriptResult, ValidationResult, ScriptSections } from './types.js';
+import { LENGTH_CONSTRAINTS } from '@/config/constants/script-generation.js';
+import { VALIDATION_SCORES } from '@/config/constants/validation.js';
+import { checkHookEffectiveness, getHookWarnings } from './validation-rules/hook-rules.js';
+import { checkCTA, getCTAIssues } from './validation-rules/cta-rules.js';
 
 /**
  * Structure Check Result
@@ -29,30 +33,6 @@ interface StructureCheck {
 interface QualityCheck {
   errors: string[];
   warnings: string[];
-}
-
-/**
- * Hook Effectiveness Check
- *
- * @property hasNumbers - Whether hook contains numbers
- * @property hasEmotion - Whether hook has emotional triggers
- * @property hasDirectAddress - Whether hook directly addresses viewer
- */
-interface HookCheck {
-  hasNumbers: boolean;
-  hasEmotion: boolean;
-  hasDirectAddress: boolean;
-}
-
-/**
- * CTA Check
- *
- * @property hasActionVerb - Whether conclusion has action verbs
- * @property hasUrgency - Whether conclusion has urgency expressions
- */
-interface CTACheck {
-  hasActionVerb: boolean;
-  hasUrgency: boolean;
 }
 
 /**
@@ -143,25 +123,33 @@ export class ScriptValidator {
       errors.push('결론 섹션이 비어있습니다');
     }
 
-    // 섹션 길이 검증 (권장 범위)
+    // 섹션 길이 검증 (권장 범위 - 상수 사용)
     const hookLength = sections.hook?.length ?? 0;
-    if (hookLength < 10 || hookLength > 30) {
-      warnings.push(`Hook 길이가 권장 범위를 벗어남 (현재: ${hookLength}자, 권장: 10-30자)`);
+    if (hookLength < LENGTH_CONSTRAINTS.HOOK.min || hookLength > LENGTH_CONSTRAINTS.HOOK.max) {
+      warnings.push(
+        `Hook 길이가 권장 범위를 벗어남 (현재: ${hookLength}자, 권장: ${LENGTH_CONSTRAINTS.HOOK.min}-${LENGTH_CONSTRAINTS.HOOK.max}자)`
+      );
     }
 
     const problemLength = sections.problem?.length ?? 0;
-    if (problemLength < 50 || problemLength > 100) {
-      warnings.push(`문제 길이가 권장 범위를 벗어남 (현재: ${problemLength}자, 권장: 50-100자)`);
+    if (problemLength < LENGTH_CONSTRAINTS.PROBLEM.min || problemLength > LENGTH_CONSTRAINTS.PROBLEM.max) {
+      warnings.push(
+        `문제 길이가 권장 범위를 벗어남 (현재: ${problemLength}자, 권장: ${LENGTH_CONSTRAINTS.PROBLEM.min}-${LENGTH_CONSTRAINTS.PROBLEM.max}자)`
+      );
     }
 
     const impactLength = sections.impact?.length ?? 0;
-    if (impactLength < 100 || impactLength > 150) {
-      warnings.push(`영향 길이가 권장 범위를 벗어남 (현재: ${impactLength}자, 권장: 100-150자)`);
+    if (impactLength < LENGTH_CONSTRAINTS.IMPACT.min || impactLength > LENGTH_CONSTRAINTS.IMPACT.max) {
+      warnings.push(
+        `영향 길이가 권장 범위를 벗어남 (현재: ${impactLength}자, 권장: ${LENGTH_CONSTRAINTS.IMPACT.min}-${LENGTH_CONSTRAINTS.IMPACT.max}자)`
+      );
     }
 
     const conclusionLength = sections.conclusion?.length ?? 0;
-    if (conclusionLength < 20 || conclusionLength > 50) {
-      warnings.push(`결론 길이가 권장 범위를 벗어남 (현재: ${conclusionLength}자, 권장: 20-50자)`);
+    if (conclusionLength < LENGTH_CONSTRAINTS.CONCLUSION.min || conclusionLength > LENGTH_CONSTRAINTS.CONCLUSION.max) {
+      warnings.push(
+        `결론 길이가 권장 범위를 벗어남 (현재: ${conclusionLength}자, 권장: ${LENGTH_CONSTRAINTS.CONCLUSION.min}-${LENGTH_CONSTRAINTS.CONCLUSION.max}자)`
+      );
     }
 
     return { errors, warnings };
@@ -184,74 +172,25 @@ export class ScriptValidator {
     const warnings: string[] = [];
     const { sections, metadata } = scriptResult;
 
-    // 전체 길이 검증 (필수)
+    // 전체 길이 검증 (필수 - 상수 사용)
     const totalLength = metadata.characterCount;
-    if (totalLength < 180) {
-      errors.push(`전체 길이가 너무 짧습니다 (현재: ${totalLength}자, 최소: 180자)`);
-    } else if (totalLength > 270) {
-      errors.push(`전체 길이가 너무 깁니다 (현재: ${totalLength}자, 최대: 270자)`);
+    if (totalLength < LENGTH_CONSTRAINTS.TOTAL.min) {
+      errors.push(`전체 길이가 너무 짧습니다 (현재: ${totalLength}자, 최소: ${LENGTH_CONSTRAINTS.TOTAL.min}자)`);
+    } else if (totalLength > LENGTH_CONSTRAINTS.TOTAL.max) {
+      errors.push(`전체 길이가 너무 깁니다 (현재: ${totalLength}자, 최대: ${LENGTH_CONSTRAINTS.TOTAL.max}자)`);
     }
 
-    // Hook 효과성 검증
-    const hookChecks = this.checkHookEffectiveness(sections.hook);
-    if (!hookChecks.hasNumbers) {
-      warnings.push('Hook에 숫자가 없습니다 (충격적 사실 강화 권장)');
-    }
-    if (!hookChecks.hasEmotion) {
-      warnings.push('Hook에 감정 트리거가 없습니다 (급락, 위험, 기회 등 권장)');
-    }
-    if (!hookChecks.hasDirectAddress) {
-      warnings.push('Hook에 직접 호명이 없습니다 (당신의, 내 지갑 등 권장)');
-    }
+    // Hook 효과성 검증 (추출된 함수 사용)
+    const hookCheck = checkHookEffectiveness(sections.hook);
+    warnings.push(...getHookWarnings(hookCheck));
 
-    // CTA 검증
-    const ctaCheck = this.checkCTA(sections.conclusion);
-    if (!ctaCheck.hasActionVerb) {
-      errors.push('결론에 행동 동사가 없습니다 (CTA 필수)');
-    }
-    if (!ctaCheck.hasUrgency) {
-      warnings.push('결론에 긴급성 표현이 없습니다 (지금, 내일 등 권장)');
-    }
+    // CTA 검증 (추출된 함수 사용)
+    const ctaCheck = checkCTA(sections.conclusion);
+    const ctaIssues = getCTAIssues(ctaCheck);
+    errors.push(...ctaIssues.errors);
+    warnings.push(...ctaIssues.warnings);
 
     return { errors, warnings };
-  }
-
-  /**
-   * Check Hook Effectiveness
-   *
-   * Validates Hook section for viral effectiveness:
-   * - Numbers: /\d+/ (shock value)
-   * - Emotional triggers: 급락, 급등, 위험, 기회, 충격, 폭등, 폭락, 긴급, 경고
-   * - Direct address: 당신, 내, 우리, 여러분
-   *
-   * @param hook - Hook section text
-   * @returns Hook effectiveness indicators
-   * @private
-   */
-  private checkHookEffectiveness(hook: string): HookCheck {
-    const hasNumbers = /\d+/.test(hook);
-    const hasEmotion = /(급락|급등|위험|기회|충격|폭등|폭락|긴급|경고)/i.test(hook);
-    const hasDirectAddress = /(당신|내|우리|여러분)/i.test(hook);
-
-    return { hasNumbers, hasEmotion, hasDirectAddress };
-  }
-
-  /**
-   * Check CTA (Call-to-Action)
-   *
-   * Validates conclusion section for effective CTA:
-   * - Action verbs: 확인, 준비, 체크, 얘기, 공유, 저장, 기억, 주목
-   * - Urgency expressions: 지금, 내일, 즉시, 빨리, 서둘러, 곧
-   *
-   * @param conclusion - Conclusion section text
-   * @returns CTA strength indicators
-   * @private
-   */
-  private checkCTA(conclusion: string): CTACheck {
-    const hasActionVerb = /(확인|준비|체크|얘기|공유|저장|기억|주목)/i.test(conclusion);
-    const hasUrgency = /(지금|내일|즉시|빨리|서둘러|곧)/i.test(conclusion);
-
-    return { hasActionVerb, hasUrgency };
   }
 
   /**
@@ -261,8 +200,7 @@ export class ScriptValidator {
    * - Start at 100 points
    * - Structure error: -30 points each
    * - Quality error: -20 points each
-   * - Structure warning: -5 points each
-   * - Quality warning: -5 points each
+   * - Warning: -5 points each
    * - Minimum: 0 points
    *
    * @param structureCheck - Structure validation result
@@ -271,20 +209,18 @@ export class ScriptValidator {
    * @private
    */
   private calculateScore(structureCheck: StructureCheck, qualityCheck: QualityCheck): number {
-    let score = 100;
+    let score = VALIDATION_SCORES.MAX_SCORE;
 
-    // 구조 에러: -30점
-    score -= structureCheck.errors.length * 30;
+    // 구조 에러
+    score -= structureCheck.errors.length * VALIDATION_SCORES.STRUCTURE_ERROR_PENALTY;
 
-    // 품질 에러: -20점
-    score -= qualityCheck.errors.length * 20;
+    // 품질 에러
+    score -= qualityCheck.errors.length * VALIDATION_SCORES.QUALITY_ERROR_PENALTY;
 
-    // 구조 경고: -5점
-    score -= structureCheck.warnings.length * 5;
+    // 경고
+    score -= structureCheck.warnings.length * VALIDATION_SCORES.WARNING_PENALTY;
+    score -= qualityCheck.warnings.length * VALIDATION_SCORES.WARNING_PENALTY;
 
-    // 품질 경고: -5점
-    score -= qualityCheck.warnings.length * 5;
-
-    return Math.max(0, score); // 최소 0점
+    return Math.max(VALIDATION_SCORES.MIN_SCORE, score);
   }
 }

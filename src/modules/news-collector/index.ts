@@ -2,6 +2,7 @@ import { chatJSON } from '@/utils/gemini.js';
 import { CollectionResult, NewsItem } from './types.js';
 import { GoogleNewsCollector, GoogleNewsExtractor } from './google-news/index.js';
 import { extractMeaningfulContent, 콘텐츠_기반_필터링_프롬프트, 타이틀_기반_필터링_프롬프트 } from './shared/index.js';
+import z from 'zod';
 
 /**
  * Google News 수집 서비스
@@ -112,8 +113,10 @@ export class GoogleNewsService {
         title: item.title,
       }));
 
+      const responseSchema = z.array(z.object({ id: z.number(), title: z.string() }));
+
       const prompt = 타이틀_기반_필터링_프롬프트(newsWithId);
-      const filtered = await chatJSON<{ id: number; title: string }[]>(prompt);
+      const filtered = await chatJSON<{ id: number; title: string }[]>(prompt, { responseJsonSchema: responseSchema });
 
       return filtered.map((item) => newsItems[item.id]);
     } catch (error) {

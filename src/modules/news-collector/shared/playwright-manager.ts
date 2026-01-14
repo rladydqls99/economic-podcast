@@ -1,16 +1,21 @@
 import { chromium, Browser, BrowserContext, Page } from 'playwright';
+import { LIMITS } from '@/config/constants/timeouts.js';
+import { AsyncQueue } from '@/utils/async-queue.js';
 
 /**
  * Playwright 브라우저 풀 관리
  * - 브라우저 재사용으로 성능 향상
- * - 동시 요청 수 제한
+ * - 동시 요청 수 제한 (AsyncQueue 기반)
  * FR-001-04: 동적 콘텐츠 지원
  */
 export class PlaywrightManager {
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
-  private activeTabs = 0;
-  private readonly MAX_CONCURRENT_TABS = 5;
+  private readonly queue: AsyncQueue;
+
+  constructor() {
+    this.queue = new AsyncQueue(LIMITS.MAX_CONCURRENT_TABS);
+  }
 
   /**
    * 브라우저 초기화
@@ -32,8 +37,8 @@ export class PlaywrightManager {
 
   /**
    * 새 페이지 생성
-   * - 동시 탭 수 제한 (MAX_CONCURRENT_TABS)
-   * - 페이지 닫힐 때 자동으로 카운터 감소
+   * - 동시 탭 수 제한 (AsyncQueue 기반 - 이벤트 드리븐)
+   * - 페이지 닫힐 때 자동으로 슬롯 반환
    * @returns Playwright Page 인스턴스
    */
   async newPage(): Promise<Page> {
@@ -41,17 +46,14 @@ export class PlaywrightManager {
       await this.initialize();
     }
 
-    // 동시 탭 수 제한
-    while (this.activeTabs >= this.MAX_CONCURRENT_TABS) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+    // 슬롯 획득 대기 (이벤트 드리븐 방식)
+    await this.queue.acquire();
 
-    this.activeTabs++;
     const page = await this.context!.newPage();
 
-    // 페이지 닫힐 때 카운터 감소
+    // 페이지 닫힐 때 슬롯 반환
     page.on('close', () => {
-      this.activeTabs--;
+      this.queue.release();
     });
 
     return page;
@@ -71,14 +73,20 @@ export class PlaywrightManager {
       await this.browser.close();
       this.browser = null;
     }
-    this.activeTabs = 0;
   }
 
   /**
    * 현재 활성 탭 수 조회 (테스트용)
    */
   getActiveTabs(): number {
-    return this.activeTabs;
+    return this.queue.getActiveCount();
+  }
+
+  /**
+   * 대기 중인 요청 수 조회 (테스트용)
+   */
+  getWaitingCount(): number {
+    return this.queue.getWaitingCount();
   }
 
   /**

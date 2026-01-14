@@ -3,6 +3,8 @@ import Parser from 'rss-parser';
 import { isWithinRange } from '@/utils/date-time.js';
 import { CollectionResult, isValidNewsItem, NewsItem } from '../types.js';
 import { ALL_KEYWORDS } from '@/config/keywords.js';
+import { TIMEOUTS } from '@/config/constants/timeouts.js';
+import { INewsMetadataCollector } from '../interfaces.js';
 
 const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
 
@@ -18,12 +20,14 @@ const GOOGLE_NEWS_BASE_URL = 'https://news.google.com/rss/search';
  * - 메타데이터 추출 (title, url, publishedAt, source 등)
  * - 날짜 범위 필터링
  * - 중복 URL 제거
+ *
+ * @implements {INewsMetadataCollector}
  */
-export class GoogleNewsCollector {
+export class GoogleNewsCollector implements INewsMetadataCollector {
   private parser: Parser;
 
   constructor() {
-    this.parser = new Parser({ timeout: 30000 });
+    this.parser = new Parser({ timeout: TIMEOUTS.RSS_PARSE });
   }
 
   /**
@@ -47,7 +51,7 @@ export class GoogleNewsCollector {
 
     for (const keyword of ALL_KEYWORDS) {
       try {
-        await this.delay(1000);
+        await this.delay(TIMEOUTS.KEYWORD_FETCH_DELAY);
 
         const news = await this.searchByKeyword(keyword);
 

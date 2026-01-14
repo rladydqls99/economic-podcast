@@ -52,5 +52,5 @@ export const ECONOMIC_KEYWORDS = {
 export const ALL_KEYWORDS = [
   ...ECONOMIC_KEYWORDS.layer1_wallet,
   ...ECONOMIC_KEYWORDS.layer2_company,
-  ...ECONOMIC_KEYWORDS.layer3_global,
+  // ...ECONOMIC_KEYWORDS.layer3_global,
 ];

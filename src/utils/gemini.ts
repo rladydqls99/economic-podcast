@@ -11,20 +11,15 @@ const groundingTool = {
   googleSearch: {},
 };
 
-const responseSchema = z.object({
-  hook: z.string().describe('첫 3초 문장 (충격적 사실, 긴급성 강조)'),
-  problem: z.string().describe('문제 설명 (배경, 맥락, 쉬운 용어, 2-3문장)'),
-  impact: z.string().describe('개인 영향 (내 지갑 관련성, 구체적 숫자, 3-4문장)'),
-  conclusion: z.string().describe('결론 및 CTA (즉각적 행동 유도)'),
-});
-
 /**
  * Gemini API 호출 옵션
  */
-export interface GeminiChatOptions {
+export interface GeminiChatOptions<T = unknown> {
   model?: string;
   temperature?: number;
   maxTokens?: number;
+  responseMimeType?: string;
+  responseJsonSchema?: z.ZodType<T>;
 }
 
 /**
@@ -93,7 +88,7 @@ export const chat = async (prompt: string, options?: GeminiChatOptions): Promise
  * );
  * console.log(result.selectedIndices);
  */
-export const chatJSON = async <T = unknown>(prompt: string, options?: GeminiChatOptions): Promise<T> => {
+export const chatJSON = async <T = unknown>(prompt: string, options?: GeminiChatOptions<T>): Promise<T> => {
   try {
     const response = await gemini.models.generateContent({
       model: options?.model || 'gemini-3-flash-preview',
@@ -101,8 +96,8 @@ export const chatJSON = async <T = unknown>(prompt: string, options?: GeminiChat
       config: {
         temperature: options?.temperature,
         maxOutputTokens: options?.maxTokens,
-        responseMimeType: 'application/json',
-        responseJsonSchema: zodToJsonSchema(responseSchema),
+        responseMimeType: options?.responseMimeType || 'application/json',
+        responseJsonSchema: options?.responseJsonSchema ? zodToJsonSchema(options.responseJsonSchema) : undefined,
       },
     });
 
@@ -112,7 +107,11 @@ export const chatJSON = async <T = unknown>(prompt: string, options?: GeminiChat
       throw new Error('Gemini API returned empty response');
     }
 
-    return responseSchema.parse(JSON.parse(text)) as T;
+    if (!options?.responseJsonSchema) {
+      return JSON.parse(text) as T;
+    }
+
+    return options.responseJsonSchema.parse(JSON.parse(text)) as T;
   } catch (error) {
     const errorMessage = `Gemini API JSON 호출 실패: ${(error as Error).message}`;
     console.error(`[Gemini] ${errorMessage}`);
